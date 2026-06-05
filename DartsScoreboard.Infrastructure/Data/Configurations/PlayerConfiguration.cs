@@ -16,7 +16,11 @@ public class PlayerConfiguration : IEntityTypeConfiguration<Player>
             .HasMaxLength(100)
             .IsRequired();
 
-        builder.HasIndex(x => x.Name)
+        builder.HasIndex(player => new
+            {
+                player.CreatedByUserId,
+                player.Name
+            })
             .IsUnique();
     }
 }
