@@ -1,0 +1,82 @@
+<div class="games-page">
+
+  @if (mode === 'active') {
+
+    <h1>Aktív játékok</h1>
+
+    @if (activeGames.length === 0) {
+      <p>Nincs aktív játék.</p>
+    }
+
+    <div class="games-grid">
+
+      @for (game of activeGames; track game.id) {
+
+        <div class="game-card">
+
+          <div class="game-type">
+            {{ game.gameType === 1 ? '301' : '501' }}
+          </div>
+
+          <div class="game-meta">
+            Kezdés:
+            {{ game.startedAt | date:'yyyy.MM.dd HH:mm' }}
+          </div>
+
+          <button
+            type="button"
+            (click)="openGame(game.id)">
+            Folytatás
+          </button>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+  @if (mode === 'history') {
+
+    <h1>Előzmények</h1>
+
+    @if (finishedGames.length === 0) {
+      <p>Nincs befejezett játék.</p>
+    }
+
+    <div class="games-grid">
+
+      @for (game of finishedGames; track game.id) {
+
+        <div class="game-card">
+
+          <div class="game-type">
+            {{ game.gameType === 1 ? '301' : '501' }}
+          </div>
+
+          <div class="game-meta">
+            Kezdés:
+            {{ game.startedAt | date:'yyyy.MM.dd HH:mm' }}
+          </div>
+
+          <div class="game-meta">
+            Befejezve:
+            {{ game.finishedAt | date:'yyyy.MM.dd HH:mm' }}
+          </div>
+
+          <button
+            type="button"
+            (click)="openGame(game.id)">
+            Megnyitás
+          </button>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>

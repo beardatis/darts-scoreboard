@@ -1,0 +1,135 @@
+<nav class="navbar">
+
+  <div class="navbar-brand">
+
+    <img
+      src="/logo.png"
+      alt="Darts Scoreboard">
+
+  </div>
+
+  <div class="navbar-links">
+
+    <a
+      routerLink="/games/create"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }">
+      Új játék
+    </a>
+
+    <a
+      routerLink="/games/active"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }">
+      Aktív játékok
+    </a>
+
+    <a
+      routerLink="/games/history"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }">
+      Előzmények
+    </a>
+
+    <a
+      routerLink="/players"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }">
+      Játékosok
+    </a>
+
+  </div>
+
+  <div class="navbar-user">
+
+    <button
+      type="button"
+      class="user-button"
+      (click)="toggleUserMenu()">
+
+      👤 {{ username }}
+
+      <span>
+        ▼
+      </span>
+
+    </button>
+
+    @if (isUserMenuOpen) {
+
+      <div class="user-menu">
+
+        <button
+          type="button"
+          (click)="logout()">
+
+          Kilépés
+
+        </button>
+
+      </div>
+
+    }
+
+  </div>
+
+  <button
+    type="button"
+    class="hamburger"
+    (click)="toggleMenu()">
+
+    ☰
+
+  </button>
+
+  @if (menuOpen) {
+
+    <div class="mobile-menu">
+
+      <a
+        routerLink="/games/create"
+        (click)="closeMenu()">
+
+        Új játék
+
+      </a>
+
+      <a
+        routerLink="/games/active"
+        (click)="closeMenu()">
+
+        Aktív játékok
+
+      </a>
+
+      <a
+        routerLink="/games/history"
+        (click)="closeMenu()">
+
+        Előzmények
+
+      </a>
+
+      <a
+        routerLink="/players"
+        (click)="closeMenu()">
+
+        Játékosok
+
+      </a>
+
+      <hr>
+
+      <button
+        type="button"
+        (click)="logout()">
+
+        Kilépés
+
+      </button>
+
+    </div>
+
+  }
+
+</nav>

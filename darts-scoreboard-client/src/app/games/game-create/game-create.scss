@@ -1,0 +1,118 @@
+.selected-player {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  min-height: 56px;
+
+  margin-bottom: 10px;
+  padding: 10px 16px;
+
+  background: #111923;
+
+  border: 1px solid #243241;
+  border-radius: 14px;
+}
+
+.selected-player-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.order-number {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #0f2418;
+  color: #7cff9b;
+
+  border: 1px solid #7cff9b;
+
+  font-weight: 900;
+}
+
+.order-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.order-buttons button {
+  width: 42px;
+  height: 42px;
+
+  padding: 0;
+
+  border-radius: 10px;
+
+  font-size: 18px;
+  font-weight: 900;
+}
+.game-type-grid,
+.player-grid {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.game-type-grid {
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+}
+
+.player-grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.select-card {
+  min-height: 72px;
+  border-radius: 14px;
+  border: 1px solid #243241;
+  background: #111923;
+  color: #e5f7ec;
+  font-size: 22px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.select-card.selected {
+  border-color: #7cff9b;
+  color: #7cff9b;
+  box-shadow: 0 0 18px rgba(124, 255, 155, 0.22);
+}
+
+.player-select-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: flex-start;
+  padding: 16px;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #1c2835;
+  color: #7cff9b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.start-game-button {
+  margin-top: 24px;
+
+  min-width: 220px;
+  height: 56px;
+
+  font-size: 20px;
+  font-weight: 700;
+}

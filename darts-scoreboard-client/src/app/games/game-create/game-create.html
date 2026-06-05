@@ -1,0 +1,132 @@
+<div class="game-create-page">
+
+  <h1>Új játék</h1>
+
+  <section>
+
+    <h2>Játéktípus</h2>
+
+    <div class="game-type-grid">
+
+      <button
+        type="button"
+        class="select-card"
+        [class.selected]="gameType === 1"
+        (click)="gameType = 1">
+
+        301
+
+      </button>
+
+      <button
+        type="button"
+        class="select-card"
+        [class.selected]="gameType === 2"
+        (click)="gameType = 2">
+
+        501
+
+      </button>
+
+    </div>
+
+  </section>
+
+  <section>
+
+    <h2>Játékosok</h2>
+
+    <div class="player-grid">
+
+      @for (player of players; track player.id) {
+
+        <button
+          type="button"
+          class="select-card player-select-card"
+          [class.selected]="selectedPlayerIds.includes(player.id)"
+          (click)="togglePlayerSelection(player.id)">
+
+          <span class="avatar">
+            {{ player.name.charAt(0).toUpperCase() }}
+          </span>
+
+          <span class="player-name">
+            {{ player.name }}
+          </span>
+
+        </button>
+
+      }
+
+    </div>
+
+  </section>
+
+  @if (selectedPlayerIds.length > 0) {
+
+    <section>
+
+      <h2>Kiválasztott játékosok sorrendje</h2>
+
+      @for (
+        playerId of selectedPlayerIds;
+        track playerId;
+        let index = $index
+        ) {
+
+        <div class="selected-player">
+
+          <div class="selected-player-left">
+
+            <div class="order-number">
+              {{ index + 1 }}
+            </div>
+
+            <span class="selected-player-name">
+              {{
+                players.find(
+                  player => player.id === playerId
+                )?.name
+              }}
+            </span>
+
+          </div>
+
+          <div class="order-buttons">
+
+            <button
+              type="button"
+              (click)="movePlayerUp(playerId)">
+
+              ↑
+
+            </button>
+
+            <button
+              type="button"
+              (click)="movePlayerDown(playerId)">
+
+              ↓
+
+            </button>
+
+          </div>
+
+        </div>
+
+      }
+
+    </section>
+
+  }
+
+  <button
+    type="button"
+    class="start-game-button"
+    (click)="startGame()">
+
+    Játék indítása
+
+  </button>
+
+</div>

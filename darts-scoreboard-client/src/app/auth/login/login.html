@@ -1,0 +1,32 @@
+<div class="login-page">
+
+  <div class="login-card">
+
+    <h1>Darts Scoreboard</h1>
+
+    <input
+      type="email"
+      placeholder="Email cím"
+      [(ngModel)]="email">
+
+    <input
+      type="password"
+      placeholder="Jelszó"
+      [(ngModel)]="password">
+
+    <button
+      (click)="login()">
+      Bejelentkezés
+    </button>
+
+    <div class="register-link">
+      Nincs még fiókod?
+
+      <a routerLink="/register">
+        Regisztráció
+      </a>
+    </div>
+
+  </div>
+
+</div>

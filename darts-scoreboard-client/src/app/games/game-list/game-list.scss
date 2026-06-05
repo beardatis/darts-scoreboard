@@ -1,0 +1,65 @@
+.games-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.games-page h1 {
+  font-size: 52px;
+  margin-bottom: 32px;
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.game-card {
+  background: #111923;
+  border: 1px solid #243241;
+  border-radius: 22px;
+
+  padding: 26px;
+
+  transition: all .2s ease;
+}
+
+.game-card:hover {
+  transform: translateY(-2px);
+  border-color: #7cff9b;
+  box-shadow: 0 0 18px rgba(124, 255, 155, 0.18);
+}
+
+.game-type {
+  color: #7cff9b;
+  font-size: 40px;
+  font-weight: 900;
+  margin-bottom: 18px;
+}
+
+.game-meta {
+  color: #dce8f2;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.game-card button {
+  margin-top: 18px;
+  height: 48px;
+  padding: 0 22px;
+
+  font-size: 16px;
+  font-weight: 800;
+}
+
+@media (max-width: 768px) {
+  .games-page h1 {
+    font-size: 40px;
+  }
+
+  .game-type {
+    font-size: 36px;
+  }
+}

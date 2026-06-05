@@ -1,0 +1,21 @@
+# .NET
+bin/
+obj/
+.vs/
+
+# Rider
+.idea/
+
+# Angular
+darts-scoreboard-client/node_modules/
+darts-scoreboard-client/dist/
+darts-scoreboard-client/.angular/
+
+# Visual Studio Code
+.vscode/
+
+# Mac
+.DS_Store
+
+# Logs
+*.log

@@ -1,0 +1,201 @@
+@if (game) {
+
+  <section class="game-layout">
+
+    <aside class="players-panel">
+
+      <div class="active-game-box">
+        <span class="label">Aktív játék</span>
+        <strong>
+          {{ game.gameType === 1 ? '301' : '501' }}
+        </strong>
+      </div>
+
+      <h2>Játékosok</h2>
+
+      @for (
+        player of game.players;
+        track player.playerId;
+        let index = $index
+        ) {
+
+        <div
+          class="player-card"
+          [class.active-player]="index === activePlayerIndex && !isGameFinished">
+
+          <div
+            class="avatar"
+            [ngClass]="getAvatarClass(index)">
+
+            {{ player.playerName.charAt(0).toUpperCase() }}
+
+
+          </div>
+
+          <div class="player-info">
+            <div class="player-name">
+              {{ player.playerName }}
+            </div>
+
+            <div class="player-score">
+              {{ player.remainingScore }}
+            </div>
+
+            @if (!isGameFinished && lastThrows[player.playerId]) {
+              <div class="last-throw">
+                Utolsó: {{ lastThrows[player.playerId] }}
+              </div>
+            }
+
+            @if (checkoutSuggestions[player.playerId]) {
+              <div class="checkout">
+                Checkout: {{ checkoutSuggestions[player.playerId] }}
+              </div>
+            }
+          </div>
+
+        </div>
+
+      }
+
+    </aside>
+
+    <main class="throw-panel">
+
+      @if (isGameFinished && winnerPlayerId) {
+
+        <div class="winner-box">
+          <h1>🏆 Játék vége</h1>
+
+          @for (player of game.players; track player.playerId) {
+            @if (player.playerId === winnerPlayerId) {
+              <h2>Nyertes: {{ player.playerName }}</h2>
+            }
+          }
+        </div>
+
+      }
+
+      @if (!isGameFinished) {
+
+        <div class="active-player-title">
+          <span>Most dob:</span>
+          <strong>
+            {{ game.players[activePlayerIndex].playerName }}
+          </strong>
+        </div>
+
+        <div class="current-darts">
+          <span>{{ currentDarts[0] }}</span>
+          <span>{{ currentDarts[1] }}</span>
+          <span>{{ currentDarts[2] }}</span>
+        </div>
+
+        <div class="multiplier-row">
+          <button
+            [class.active]="selectedMultiplier === 2"
+            (click)="setDouble()">
+            Double
+          </button>
+
+          <button
+            [class.active]="selectedMultiplier === 3"
+            (click)="setTriple()">
+            Triple
+          </button>
+        </div>
+
+        <div class="number-grid">
+          @for (value of [
+            1, 2, 3, 4, 5,
+            6, 7, 8, 9, 10,
+            11, 12, 13, 14, 15,
+            16, 17, 18, 19, 20
+          ];
+            track value) {
+            <button
+              (click)="selectDartValue(value)">
+              {{ value }}
+            </button>
+          }
+        </div>
+
+        <div class="bull-row">
+          <button (click)="selectBull(25)">
+            Outer Bull
+          </button>
+
+          <button (click)="selectBull(50)">
+            Bull
+          </button>
+
+          <button (click)="selectDartValue(0)">
+            Miss
+          </button>
+        </div>
+
+        <div class="action-row">
+          <button
+            class="secondary"
+            (click)="clearCurrentThrow()">
+            Törlés
+          </button>
+
+          <button
+            class="primary"
+            (click)="recordCurrentThrow()">
+            Dobás rögzítése
+          </button>
+        </div>
+
+      }
+
+      <section class="history-panel">
+
+        <h2>Dobástörténet</h2>
+
+        @if (throws.length === 0) {
+          <p>Még nincs dobás.</p>
+        }
+
+        @if (throws.length > 0) {
+
+          <table class="history-table">
+
+            <thead>
+            <tr>
+              <th>Kör</th>
+              <th>Játékos</th>
+              <th>1. nyíl</th>
+              <th>2. nyíl</th>
+              <th>3. nyíl</th>
+              <th>Összpont</th>
+              <th>Maradék</th>
+            </tr>
+            </thead>
+
+            <tbody>
+              @for (throwItem of throws; track throwItem.id) {
+                <tr>
+                  <td>{{ throwItem.roundNumber }}</td>
+                  <td>{{ throwItem.playerName }}</td>
+                  <td>{{ throwItem.dart1 }}</td>
+                  <td>{{ throwItem.dart2 }}</td>
+                  <td>{{ throwItem.dart3 }}</td>
+                  <td>{{ throwItem.score }}</td>
+                  <td>{{ throwItem.remainingAfterThrow }}</td>
+                </tr>
+              }
+            </tbody>
+
+          </table>
+
+        }
+
+      </section>
+
+    </main>
+
+  </section>
+
+}

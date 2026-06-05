@@ -1,0 +1,40 @@
+<div class="players-page">
+
+  <h1>Játékosok</h1>
+
+  <section class="new-player-card">
+
+    <input
+      type="text"
+      placeholder="Játékos neve"
+      [(ngModel)]="newPlayerName">
+
+    <button
+      type="button"
+      (click)="addPlayer()">
+      Játékos hozzáadása
+    </button>
+
+  </section>
+
+  <section class="players-grid">
+
+    @for (player of players; track player.id) {
+
+      <div class="player-card">
+
+        <div class="avatar">
+          {{ player.name.charAt(0).toUpperCase() }}
+        </div>
+
+        <div class="player-name">
+          {{ player.name }}
+        </div>
+
+      </div>
+
+    }
+
+  </section>
+
+</div>

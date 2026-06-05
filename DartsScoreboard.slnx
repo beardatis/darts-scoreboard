@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="DartsScoreboard.Api/DartsScoreboard.Api.csproj" />
+  <Project Path="DartsScoreboard.Application/DartsScoreboard.Application.csproj" />
+  <Project Path="DartsScoreboard.Domain/DartsScoreboard.Domain.csproj" />
+  <Project Path="DartsScoreboard.Infrastructure/DartsScoreboard.Infrastructure.csproj" />
+</Solution>

@@ -1,0 +1,164 @@
+.navbar {
+  position: relative;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  background: #111923;
+  border-bottom: 1px solid #243241;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-brand img {
+  height: 72px;
+  width: auto;
+  display: block;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 32px;
+}
+
+.navbar-links a {
+  position: relative;
+  color: #dce8f2;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.navbar-links a:hover,
+.active-link {
+  color: #7cff9b !important;
+}
+
+.active-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -28px;
+  height: 3px;
+  background: #7cff9b;
+  border-radius: 999px;
+}
+
+.navbar-user {
+  position: relative;
+}
+
+.user-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.user-menu {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  min-width: 180px;
+  background: #111923;
+  border: 1px solid #243241;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .3);
+  z-index: 1000;
+}
+
+.user-menu button {
+  width: 100%;
+  padding: 12px 18px;
+  background: transparent;
+  border: none;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+}
+
+.user-menu button:hover {
+  background: rgba(124, 255, 155, .08);
+  color: #7cff9b;
+}
+
+.hamburger {
+  display: none;
+}
+
+.mobile-menu {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .navbar {
+    height: 72px;
+    padding: 0 16px;
+  }
+
+  .navbar-brand img {
+    height: 56px;
+  }
+
+  .navbar-links,
+  .navbar-user {
+    display: none;
+  }
+
+  .hamburger {
+    display: block;
+    margin-left: auto;
+    background: transparent;
+    border: none;
+    color: #e5f7ec;
+    font-size: 32px;
+    cursor: pointer;
+  }
+
+  .mobile-menu {
+    display: flex;
+    position: absolute;
+    top: 72px;
+    right: 16px;
+    width: 260px;
+    flex-direction: column;
+    gap: 12px;
+    background: #111923;
+    border: 1px solid #243241;
+    border-radius: 16px;
+    padding: 16px;
+    z-index: 1000;
+  }
+
+  .mobile-menu a,
+  .mobile-menu button {
+    color: #e5f7ec;
+    background: transparent;
+    border: none;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .mobile-menu a:hover,
+  .mobile-menu button:hover {
+    color: #7cff9b;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar-brand img {
+    height: 48px;
+  }
+}
