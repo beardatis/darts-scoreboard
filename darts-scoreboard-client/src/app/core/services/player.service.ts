@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
@@ -21,6 +20,7 @@ export class PlayerService {
       `${environment.apiUrl}/api/players`
     );
   }
+
   createPlayer(name: string): Observable<void> {
     return this.httpClient.post<void>(
       `${environment.apiUrl}/api/players`,
