@@ -87,8 +87,11 @@ using (IServiceScope scope = app.Services.CreateScope())
 
     await adminSeeder.SeedAsync();
 }
-app.UseSwagger();
-app.UseSwaggerUI();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 
