@@ -23,14 +23,14 @@ export class GameService {
 
   createGame(request: CreateGameRequest): Observable<CreateGameResponse> {
     return this.httpClient.post<CreateGameResponse>(
-      `${environment.apiUrl}/games`,
+      `${environment.apiUrl}/api/games`,
       request
     );
   }
 
   getGame(id: string): Observable<GameDetailsModel> {
     return this.httpClient.get<GameDetailsModel>(
-      `${environment.apiUrl}/games/${id}`
+      `${environment.apiUrl}/api/games/${id}`
     );
   }
 
@@ -39,18 +39,18 @@ export class GameService {
     request: RecordThrowRequest
   ): Observable<RecordThrowResponse> {
     return this.httpClient.post<RecordThrowResponse>(
-      `${environment.apiUrl}/games/${gameId}/throw`,
+      `${environment.apiUrl}/api/games/${gameId}/throw`,
       request
     );
   }
   getThrows(gameId: string): Observable<ThrowHistoryItem[]> {
     return this.httpClient.get<ThrowHistoryItem[]>(
-      `${environment.apiUrl}/games/${gameId}/throws`
+      `${environment.apiUrl}/api/games/${gameId}/throws`
     );
   }
   getGames(): Observable<GameListItem[]> {
     return this.httpClient.get<GameListItem[]>(
-      `${environment.apiUrl}/games`
+      `${environment.apiUrl}/api/games`
     );
   }
 }

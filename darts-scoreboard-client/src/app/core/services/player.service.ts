@@ -18,12 +18,12 @@ export class PlayerService {
 
   getPlayers(): Observable<Player[]> {
     return this.httpClient.get<Player[]>(
-      `${environment.apiUrl}/players`
+      `${environment.apiUrl}/api/players`
     );
   }
   createPlayer(name: string): Observable<void> {
     return this.httpClient.post<void>(
-      `${environment.apiUrl}/players`,
+      `${environment.apiUrl}/api/players`,
       { name }
     );
   }
