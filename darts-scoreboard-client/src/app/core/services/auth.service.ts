@@ -17,9 +17,10 @@ export class AuthService {
 
   login(request: LoginRequest): Observable<LoginResponse> {
     return this.httpClient.post<LoginResponse>(
-      `${environment.apiUrl}/auth/login`,
+      `${environment.apiUrl}/api/auth/login`,
       request
     );
+
   }
 
   saveToken(token: string): void {
@@ -37,9 +38,9 @@ export class AuthService {
   isLoggedIn(): boolean {
     return this.getToken() !== null;
   }
-  register(request: RegisterRequest): Observable<void> {
-    return this.httpClient.post<void>(
-      `${environment.apiUrl}/auth/register`,
+  register(request: RegisterRequest) {
+    return this.httpClient.post(
+      `${environment.apiUrl}/api/auth/register`,
       request
     );
   }
