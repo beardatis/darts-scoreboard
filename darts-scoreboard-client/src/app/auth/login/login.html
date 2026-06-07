@@ -15,6 +15,7 @@
       [(ngModel)]="password">
 
     <button
+      type="button"
       (click)="login()">
       Bejelentkezés
     </button>
@@ -26,6 +27,12 @@
         Regisztráció
       </a>
     </div>
+
+    <a
+      class="auth-link"
+      routerLink="/forgot-password">
+      Elfelejtetted a jelszavad?
+    </a>
 
   </div>
 

@@ -6,6 +6,8 @@ using DartsScoreboard.Domain.Entities;
 using DartsScoreboard.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace DartsScoreboard.Api.Controllers;
 
@@ -117,60 +119,79 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("forgot-password")]
-    public async Task<ActionResult<ForgotPasswordResponse>> ForgotPassword(
+    public async Task<IActionResult> ForgotPassword(
         ForgotPasswordRequest request)
     {
+        if (string.IsNullOrWhiteSpace(request.Email))
+        {
+            return Ok();
+        }
+
+        string email = request.Email.Trim().ToLower();
+
         User? user = await _dbContext.Users
             .FirstOrDefaultAsync(user =>
-                user.Email.ToLower() == request.Email.ToLower());
+                user.Email.ToLower() == email);
 
         if (user is null)
         {
-            return NotFound("User not found.");
+            return Ok();
         }
 
-        string resetTokenValue = Guid.NewGuid().ToString("N");
+        string resetTokenValue = GenerateResetToken();
+        string resetTokenHash = HashResetToken(resetTokenValue);
 
         PasswordResetToken resetToken = new PasswordResetToken
         {
             UserId = user.Id,
-            TokenHash = resetTokenValue,
+            TokenHash = resetTokenHash,
             ExpiresAt = DateTime.UtcNow.AddHours(1)
         };
 
         _dbContext.PasswordResetTokens.Add(resetToken);
 
         await _dbContext.SaveChangesAsync();
-        
+
         await _emailSender.SendPasswordResetEmailAsync(
             user.Email,
             resetTokenValue);
 
-        return Ok(new ForgotPasswordResponse
-        {
-            ResetToken = resetTokenValue
-        });
-        
-        
+        return Ok();
     }
     
     [HttpPost("reset-password")]
     public async Task<IActionResult> ResetPassword(
         ResetPasswordRequest request)
     {
+        if (string.IsNullOrWhiteSpace(request.Email) ||
+            string.IsNullOrWhiteSpace(request.Token) ||
+            string.IsNullOrWhiteSpace(request.NewPassword))
+        {
+            return BadRequest("All fields are required.");
+        }
+
+        if (request.NewPassword.Length < 6)
+        {
+            return BadRequest("Password must be at least 6 characters.");
+        }
+        string email = request.Email.Trim().ToLower();
+
         User? user = await _dbContext.Users
             .FirstOrDefaultAsync(user =>
-                user.Email.ToLower() == request.Email.ToLower());
+                user.Email.ToLower() == email);
 
         if (user is null)
         {
             return NotFound("User not found.");
         }
 
+        string requestTokenHash =
+            HashResetToken(request.Token);
+
         PasswordResetToken? resetToken = await _dbContext
             .PasswordResetTokens
             .FirstOrDefaultAsync(token =>
-                token.TokenHash == request.Token &&
+                token.TokenHash == requestTokenHash &&
                 token.UserId == user.Id);
 
         if (resetToken is null)
@@ -195,5 +216,18 @@ public class AuthController : ControllerBase
         await _dbContext.SaveChangesAsync();
 
         return Ok();
+    }
+    
+    private static string GenerateResetToken()
+    {
+        return Convert.ToBase64String(
+            RandomNumberGenerator.GetBytes(64));
+    }
+
+    private static string HashResetToken(string token)
+    {
+        return Convert.ToBase64String(
+            SHA256.HashData(
+                Encoding.UTF8.GetBytes(token)));
     }
 }

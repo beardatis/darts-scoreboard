@@ -44,4 +44,27 @@ export class AuthService {
       request
     );
   }
+  forgotPassword(email: string) {
+    return this.httpClient.post(
+      `${environment.apiUrl}/api/auth/forgot-password`,
+      {
+        email
+      }
+    );
+  }
+
+  resetPassword(
+    email: string,
+    token: string,
+    newPassword: string
+  ) {
+    return this.httpClient.post(
+      `${environment.apiUrl}/api/auth/reset-password`,
+      {
+        email,
+        token,
+        newPassword
+      }
+    );
+  }
 }

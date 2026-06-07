@@ -7,6 +7,8 @@ import { GameDetails } from './games/game-details/game-details';
 import { Register } from './auth/register/register';
 import { GameList }
   from './games/game-list/game-list';
+import { ForgotPassword } from './auth/forgot-password/forgot-password';
+import { ResetPassword } from './auth/reset-password/reset-password';
 
 export const routes: Routes = [
   {
@@ -41,5 +43,13 @@ export const routes: Routes = [
   {
     path: 'games/:id',
     component: GameDetails
+  },
+  {
+    path: 'forgot-password',
+    component: ForgotPassword
+  },
+  {
+    path: 'reset-password',
+    component: ResetPassword
   }
 ];
