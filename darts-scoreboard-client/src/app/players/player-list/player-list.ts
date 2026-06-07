@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 
 import { PlayerService } from '../../core/services/player.service';
 import { Player } from '../../shared/models/player';
-import { RouterLink } from '@angular/router';
+// import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-player-list',
-  imports: [CommonModule, FormsModule, RouterLink],
+  //imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule,],
   templateUrl: './player-list.html',
   styleUrl: './player-list.scss'
 })

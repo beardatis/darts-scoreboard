@@ -8,7 +8,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using DartsScoreboard.Infrastructure.Data.Seed;
 using DartsScoreboard.Infrastructure.Email;
+using DotNetEnv;
 
+Env.Load();
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -73,6 +75,7 @@ builder.Services
 builder.Services.Configure<AdminSeedSettings>(
     builder.Configuration.GetSection("AdminSeed")
 );
+
 builder.Services.AddScoped<IEmailSender, ConsoleEmailSender>();
 
 builder.Services.AddScoped<AdminSeeder>();

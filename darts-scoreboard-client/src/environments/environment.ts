@@ -1,3 +1,4 @@
 export const environment = {
-  apiUrl: 'https://darts-scoreboard-ns18.onrender.com'
+  production: false,
+  apiUrl: 'http://localhost:5062'
 };
