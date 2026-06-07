@@ -143,8 +143,16 @@
 
           <button
             class="primary"
+            type="button"
+            [disabled]="isRecordingThrow"
             (click)="recordCurrentThrow()">
-            Dobás rögzítése
+
+            @if (isRecordingThrow) {
+              Rögzítés...
+            } @else {
+              Dobás rögzítése
+            }
+
           </button>
         </div>
 

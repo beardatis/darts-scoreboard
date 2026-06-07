@@ -318,7 +318,9 @@ public async Task<ActionResult<List<ThrowRecordResponse>>> GetThrows(
         .Where(throwRecord => throwRecord.GameId == id)
         .Include(throwRecord => throwRecord.GamePlayer)
         .ThenInclude(gamePlayer => gamePlayer!.Player)
-        .OrderBy(throwRecord => throwRecord.CreatedAt)
+        .OrderBy(throwRecord => throwRecord.RoundNumber)
+        .ThenBy(throwRecord => throwRecord.GamePlayer!.TurnOrder)
+        .ThenBy(throwRecord => throwRecord.CreatedAt)
         .Select(throwRecord => new ThrowRecordResponse
         {
             Id = throwRecord.Id,

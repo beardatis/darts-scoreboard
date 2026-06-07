@@ -53,6 +53,8 @@ export class GameDetails implements OnInit {
 
   throws: ThrowHistoryItem[] = [];
 
+  isRecordingThrow = false;
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly gameService: GameService,
@@ -130,6 +132,9 @@ export class GameDetails implements OnInit {
   }
 
   recordCurrentThrow(): void {
+    if (this.isRecordingThrow) {
+      return;
+    }
 
     if (this.game === null) {
       return;
@@ -170,6 +175,9 @@ export class GameDetails implements OnInit {
       return;
     }
 
+    this.isRecordingThrow = true;
+    this.changeDetectorRef.detectChanges();
+
     this.gameService.recordThrow(
       this.game.id,
       request
@@ -201,6 +209,7 @@ export class GameDetails implements OnInit {
 
           this.loadGame(gameId);
           this.loadThrows(gameId);
+          this.isRecordingThrow = false;
 
           setTimeout(() => {
             this.changeDetectorRef.detectChanges();
@@ -209,6 +218,8 @@ export class GameDetails implements OnInit {
         error: error => {
           console.error(error);
           alert('Nem sikerült rögzíteni a dobást.');
+          this.isRecordingThrow = false;
+          this.changeDetectorRef.detectChanges();
         }
       });
   }
