@@ -244,6 +244,17 @@ public async Task<IActionResult> RecordThrow(
         .Where(throwRecord =>
             throwRecord.GamePlayerId == gamePlayer.Id)
         .CountAsync() + 1;
+    
+    bool throwAlreadyExists = await _dbContext.ThrowRecords
+        .AnyAsync(throwRecord =>
+            throwRecord.GameId == game.Id &&
+            throwRecord.GamePlayerId == gamePlayer.Id &&
+            throwRecord.RoundNumber == nextRoundNumber);
+
+    if (throwAlreadyExists)
+    {
+        return Conflict("Throw already recorded for this player in this round.");
+    }
 
     ThrowRecord throwRecord = new ThrowRecord
     {

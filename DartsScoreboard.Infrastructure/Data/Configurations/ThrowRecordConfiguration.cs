@@ -19,5 +19,13 @@ public class ThrowRecordConfiguration : IEntityTypeConfiguration<ThrowRecord>
         builder.HasOne(x => x.GamePlayer)
             .WithMany()
             .HasForeignKey(x => x.GamePlayerId);
+        
+        builder.HasIndex(throwRecord => new
+            {
+                throwRecord.GameId,
+                throwRecord.GamePlayerId,
+                throwRecord.RoundNumber
+            })
+            .IsUnique();
     }
 }
