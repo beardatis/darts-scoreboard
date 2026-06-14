@@ -7,12 +7,12 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { NgClass } from '@angular/common';
 
 import { GameService } from '../../core/services/game.service';
 import { GameDetailsModel } from '../../shared/models/game-details-model';
 import { RecordThrowRequest } from '../../shared/models/record-throw-request';
 import { ThrowHistoryItem } from '../../shared/models/throw-history-item';
-import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-game-details',
@@ -33,12 +33,12 @@ export class GameDetails implements OnInit {
 
   currentDarts: number[] = [0, 0, 0];
   currentDartIndex = 0;
+
   currentDartsDoubleOut: boolean[] = [
     false,
     false,
     false
   ];
-
 
   lastThrows: {
     [playerId: string]: number;
@@ -66,7 +66,6 @@ export class GameDetails implements OnInit {
     const gameId: string | null =
       this.route.snapshot.paramMap.get('id');
 
-
     if (gameId === null) {
       return;
     }
@@ -76,36 +75,54 @@ export class GameDetails implements OnInit {
   }
 
   setDouble(): void {
+    if (this.isRecordingThrow) {
+      return;
+    }
+
     this.selectedMultiplier = 2;
   }
 
   setTriple(): void {
+    if (this.isRecordingThrow) {
+      return;
+    }
+
     this.selectedMultiplier = 3;
   }
 
   selectDartValue(value: number): void {
-    const finalValue = value * this.selectedMultiplier;
+    if (this.isRecordingThrow) {
+      return;
+    }
+
+    const finalValue =
+      value * this.selectedMultiplier;
+
     const isDoubleOut =
       this.selectedMultiplier === 2;
 
     this.currentDarts[this.currentDartIndex] =
-      value * this.selectedMultiplier;
+      finalValue;
 
     this.currentDartsDoubleOut[this.currentDartIndex] =
       isDoubleOut;
-
-    this.currentDarts[this.currentDartIndex] = finalValue;
 
     if (this.currentDartIndex < 2) {
       this.currentDartIndex++;
     }
 
     this.selectedMultiplier = 1;
+
     this.changeDetectorRef.detectChanges();
   }
 
   selectBull(value: number): void {
-    this.currentDarts[this.currentDartIndex] = value;
+    if (this.isRecordingThrow) {
+      return;
+    }
+
+    this.currentDarts[this.currentDartIndex] =
+      value;
 
     this.currentDartsDoubleOut[this.currentDartIndex] =
       value === 50;
@@ -115,20 +132,16 @@ export class GameDetails implements OnInit {
     }
 
     this.selectedMultiplier = 1;
+
     this.changeDetectorRef.detectChanges();
   }
 
   clearCurrentThrow(): void {
-    this.currentDarts = [0, 0, 0];
-    this.currentDartIndex = 0;
-    this.selectedMultiplier = 1;
-    this.currentDartsDoubleOut = [
-      false,
-      false,
-      false
-    ];
+    if (this.isRecordingThrow) {
+      return;
+    }
 
-    this.changeDetectorRef.detectChanges();
+    this.resetCurrentThrow();
   }
 
   recordCurrentThrow(): void {
@@ -187,15 +200,19 @@ export class GameDetails implements OnInit {
 
           console.log('Throw recorded', response);
 
-          this.lastThrows[activePlayer.playerId] = response.score;
+          this.lastThrows[activePlayer.playerId] =
+            response.score;
 
           this.checkoutSuggestions[activePlayer.playerId] =
             response.checkoutSuggestion;
 
-          this.isGameFinished = response.isGameFinished;
-          this.winnerPlayerId = response.winnerPlayerId;
+          this.isGameFinished =
+            response.isGameFinished;
 
-          this.clearCurrentThrow();
+          this.winnerPlayerId =
+            response.winnerPlayerId;
+
+          this.resetCurrentThrow();
 
           if (!response.isGameFinished) {
             this.activePlayerIndex =
@@ -203,25 +220,43 @@ export class GameDetails implements OnInit {
               this.game!.players.length;
           }
 
-          this.changeDetectorRef.detectChanges();
-
-          const gameId = this.game!.id;
+          const gameId =
+            this.game!.id;
 
           this.loadGame(gameId);
           this.loadThrows(gameId);
-          this.isRecordingThrow = false;
 
-          setTimeout(() => {
-            this.changeDetectorRef.detectChanges();
-          });
-        },
-        error: error => {
-          console.error(error);
-          alert('Nem sikerült rögzíteni a dobást.');
           this.isRecordingThrow = false;
           this.changeDetectorRef.detectChanges();
+        },
+        error: error => {
+          this.isRecordingThrow = false;
+          this.changeDetectorRef.detectChanges();
+
+          console.error(error);
+
+          if (error.status === 409) {
+            alert('Ez a dobás már rögzítve lett.');
+            return;
+          }
+
+          alert('Nem sikerült rögzíteni a dobást.');
         }
       });
+  }
+
+  private resetCurrentThrow(): void {
+    this.currentDarts = [0, 0, 0];
+    this.currentDartIndex = 0;
+    this.selectedMultiplier = 1;
+
+    this.currentDartsDoubleOut = [
+      false,
+      false,
+      false
+    ];
+
+    this.changeDetectorRef.detectChanges();
   }
 
   private loadGame(gameId: string): void {
@@ -230,13 +265,17 @@ export class GameDetails implements OnInit {
         next: game => {
 
           this.game = game;
+
           for (const player of game.players) {
             this.checkoutSuggestions[player.playerId] =
               player.checkoutSuggestion;
           }
 
-          this.isGameFinished = game.status === 2;
-          this.winnerPlayerId = game.winnerPlayerId;
+          this.isGameFinished =
+            game.status === 2;
+
+          this.winnerPlayerId =
+            game.winnerPlayerId;
 
           this.changeDetectorRef.detectChanges();
         },
@@ -258,6 +297,7 @@ export class GameDetails implements OnInit {
         }
       });
   }
+
   getAvatarClass(index: number): string {
 
     const classes = [

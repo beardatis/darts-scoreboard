@@ -245,16 +245,7 @@ public async Task<IActionResult> RecordThrow(
             throwRecord.GamePlayerId == gamePlayer.Id)
         .CountAsync() + 1;
     
-    bool throwAlreadyExists = await _dbContext.ThrowRecords
-        .AnyAsync(throwRecord =>
-            throwRecord.GameId == game.Id &&
-            throwRecord.GamePlayerId == gamePlayer.Id &&
-            throwRecord.RoundNumber == nextRoundNumber);
-
-    if (throwAlreadyExists)
-    {
-        return Conflict("Throw already recorded for this player in this round.");
-    }
+   
 
     ThrowRecord throwRecord = new ThrowRecord
     {
@@ -268,6 +259,19 @@ public async Task<IActionResult> RecordThrow(
         RoundNumber = nextRoundNumber,
         IsBust = isBust
     };
+
+    _dbContext.ThrowRecords.Add(throwRecord);
+
+    try
+    {
+        await _dbContext.SaveChangesAsync();
+    }
+    catch (DbUpdateException)
+    {
+        return Conflict(
+            "Throw already recorded for this player in this round."
+        );
+    }
 
     _dbContext.ThrowRecords.Add(throwRecord);
 

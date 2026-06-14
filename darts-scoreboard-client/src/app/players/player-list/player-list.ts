@@ -16,6 +16,8 @@ import { Player } from '../../shared/models/player';
 export class PlayerList implements OnInit {
   players: Player[] = [];
   newPlayerName = '';
+  isCreatingPlayer = false;
+  isLoadingPlayers = false;
 
   constructor(
     private readonly playerService: PlayerService,
@@ -28,6 +30,8 @@ export class PlayerList implements OnInit {
   }
 
   private loadPlayers(): void {
+    this.isLoadingPlayers = true;
+
     this.playerService.getPlayers()
       .subscribe({
         next: players => {
@@ -41,20 +45,32 @@ export class PlayerList implements OnInit {
   }
 
   addPlayer(): void {
+    if (this.isCreatingPlayer) {
+      return;
+    }
+
     const name = this.newPlayerName.trim();
 
     if (!name) {
       return;
     }
 
+    this.isCreatingPlayer = true;
+    this.changeDetectorRef.detectChanges();
+
     this.playerService.createPlayer(name)
       .subscribe({
         next: () => {
           this.newPlayerName = '';
           this.loadPlayers();
+
+          this.isCreatingPlayer = false;
           this.changeDetectorRef.detectChanges();
         },
         error: error => {
+          this.isCreatingPlayer = false;
+          this.changeDetectorRef.detectChanges();
+
           console.error(error);
           alert('Nem sikerült létrehozni a játékost.');
         }

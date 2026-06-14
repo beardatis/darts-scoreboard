@@ -122,11 +122,13 @@
 
   <button
     type="button"
-    class="start-game-button"
+    [disabled]="isCreatingGame"
     (click)="startGame()">
-
-    Játék indítása
-
+    @if (isCreatingGame) {
+      Létrehozás...
+    } @else {
+      Játék indítása
+    }
   </button>
 
 </div>

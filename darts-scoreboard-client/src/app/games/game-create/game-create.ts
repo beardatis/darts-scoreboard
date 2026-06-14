@@ -20,10 +20,9 @@ import { GameService } from '../../core/services/game.service';
 export class GameCreate implements OnInit {
 
   players: Player[] = [];
-
   selectedPlayerIds: string[] = [];
-
   gameType = 2; // 501
+  isCreatingGame = false;
 
   constructor(
     private readonly playerService: PlayerService,
@@ -72,10 +71,16 @@ export class GameCreate implements OnInit {
 
   startGame(): void {
 
+    if (this.isCreatingGame) {
+      return;
+    }
+
     if (this.selectedPlayerIds.length < 1) {
       alert('Legalább egy játékost válassz.');
       return;
     }
+    this.isCreatingGame = true;
+    this.changeDetectorRef.detectChanges();
 
     this.gameService.createGame({
       gameType: this.gameType,

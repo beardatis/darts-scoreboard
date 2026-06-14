@@ -16,8 +16,13 @@
 
     <button
       type="button"
+      [disabled]="isLoggingIn"
       (click)="login()">
-      Bejelentkezés
+      @if (isLoggingIn) {
+        Bejelentkezés...
+      } @else {
+        Bejelentkezés
+      }
     </button>
 
     <div class="register-link">

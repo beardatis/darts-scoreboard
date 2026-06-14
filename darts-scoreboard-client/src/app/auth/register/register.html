@@ -19,8 +19,15 @@
       placeholder="Jelszó"
       [(ngModel)]="password">
 
-    <button (click)="register()">
-      Regisztráció
+    <button
+      type="button"
+      [disabled]="isRegistering"
+      (click)="register()">
+      @if (isRegistering) {
+        Regisztráció...
+      } @else {
+        Regisztráció
+      }
     </button>
 
     <div class="login-link">

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -18,14 +18,19 @@ export class Register {
   username = '';
   email = '';
   password = '';
+  isRegistering = false;
 
   constructor(
     private readonly authService: AuthService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly changeDetectorRef: ChangeDetectorRef
   ) {
   }
 
   register(): void {
+    if (this.isRegistering) {
+      return;
+    }
 
     if (
       !this.username.trim() ||
@@ -46,6 +51,8 @@ export class Register {
       alert('A jelszó legalább 6 karakter legyen.');
       return;
     }
+    this.isRegistering = true;
+    this.changeDetectorRef.detectChanges();
 
     this.authService.register({
       username: this.username,
@@ -59,6 +66,8 @@ export class Register {
         },
         error: error => {
           console.error(error);
+          this.isRegistering = false;
+          this.changeDetectorRef.detectChanges();
 
           if (error.error) {
             alert(error.error);

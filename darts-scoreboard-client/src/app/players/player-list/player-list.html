@@ -11,8 +11,13 @@
 
     <button
       type="button"
+      [disabled]="isCreatingPlayer"
       (click)="addPlayer()">
-      Játékos hozzáadása
+      @if (isCreatingPlayer) {
+        Létrehozás...
+      } @else {
+        Új játékos
+      }
     </button>
 
   </section>
