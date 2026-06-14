@@ -271,18 +271,18 @@ public async Task<IActionResult> RecordThrow(
 
     _dbContext.ThrowRecords.Add(throwRecord);
 
-    try
-    {
-        await _dbContext.SaveChangesAsync();
-    }
-    catch (DbUpdateException)
-    {
-        return Conflict(
-            "Throw already recorded for this player in this round."
-        );
-    }
-
-    _dbContext.ThrowRecords.Add(throwRecord);
+    // try
+    // {
+    //     await _dbContext.SaveChangesAsync();
+    // }
+    // catch (DbUpdateException)
+    // {
+    //     return Conflict(
+    //         "Throw already recorded for this player in this round."
+    //     );
+    // }
+    //
+    // _dbContext.ThrowRecords.Add(throwRecord);
 
     await _dbContext.SaveChangesAsync();
 
