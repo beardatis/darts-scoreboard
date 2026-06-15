@@ -110,7 +110,7 @@ public class SmtpEmailSender : IEmailSender
         await client.ConnectAsync(
             _settings.Host,
             _settings.Port,
-            SecureSocketOptions.StartTls,
+            SecureSocketOptions.Auto,
             cancellationTokenSource.Token);
         
         Console.WriteLine("SMTP Connect OK");
