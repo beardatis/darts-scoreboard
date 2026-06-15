@@ -13,4 +13,6 @@ public class EmailSettings
     public string From { get; set; } = string.Empty;
 
     public string FromName { get; set; } = string.Empty;
+    
+    public string BrevoApiKey { get; set; } = string.Empty;
 }

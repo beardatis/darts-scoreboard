@@ -81,7 +81,8 @@ builder.Services.Configure<AdminSeedSettings>(
 builder.Services.Configure<EmailSettings>(
     builder.Configuration.GetSection("Email"));
 
-builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
+//builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
+builder.Services.AddHttpClient<IEmailSender, APIEmailSender>();
 
 builder.Services.AddScoped<AdminSeeder>();
 
