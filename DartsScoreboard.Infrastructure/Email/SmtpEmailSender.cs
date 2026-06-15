@@ -71,7 +71,6 @@ public class SmtpEmailSender : IEmailSender
             "Jelszó visszaállítás",
             body);
     }
-
     private async Task SendAsync(
         string to,
         string subject,
@@ -96,17 +95,65 @@ public class SmtpEmailSender : IEmailSender
 
         using SmtpClient client = new();
 
+        client.Timeout = 10000;
+
+        using CancellationTokenSource cancellationTokenSource =
+            new(TimeSpan.FromSeconds(10));
+
         await client.ConnectAsync(
             _settings.Host,
             _settings.Port,
-            SecureSocketOptions.StartTls);
+            SecureSocketOptions.StartTls,
+            cancellationTokenSource.Token);
 
         await client.AuthenticateAsync(
             _settings.Username,
-            _settings.Password);
+            _settings.Password,
+            cancellationTokenSource.Token);
 
-        await client.SendAsync(message);
+        await client.SendAsync(
+            message,
+            cancellationTokenSource.Token);
 
-        await client.DisconnectAsync(true);
+        await client.DisconnectAsync(
+            true,
+            cancellationTokenSource.Token);
     }
+    // private async Task SendAsync(
+    //     string to,
+    //     string subject,
+    //     string body)
+    // {
+    //     MimeMessage message = new();
+    //
+    //     message.From.Add(
+    //         new MailboxAddress(
+    //             _settings.FromName,
+    //             _settings.From));
+    //
+    //     message.To.Add(
+    //         MailboxAddress.Parse(to));
+    //
+    //     message.Subject = subject;
+    //
+    //     message.Body = new TextPart("plain")
+    //     {
+    //         Text = body
+    //     };
+    //
+    //     using SmtpClient client = new();
+    //
+    //     await client.ConnectAsync(
+    //         _settings.Host,
+    //         _settings.Port,
+    //         SecureSocketOptions.StartTls);
+    //
+    //     await client.AuthenticateAsync(
+    //         _settings.Username,
+    //         _settings.Password);
+    //
+    //     await client.SendAsync(message);
+    //
+    //     await client.DisconnectAsync(true);
+    // }
 }
