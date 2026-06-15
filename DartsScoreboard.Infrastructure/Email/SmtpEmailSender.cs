@@ -99,21 +99,34 @@ public class SmtpEmailSender : IEmailSender
 
         using CancellationTokenSource cancellationTokenSource =
             new(TimeSpan.FromSeconds(10));
-
+        
+        Console.WriteLine(
+            $"SMTP Connect start: {_settings.Host}:{_settings.Port}");
+        
         await client.ConnectAsync(
             _settings.Host,
             _settings.Port,
             SecureSocketOptions.StartTls,
             cancellationTokenSource.Token);
+        
+        Console.WriteLine("SMTP Connect OK");
 
+        Console.WriteLine("SMTP Auth start");
+        
         await client.AuthenticateAsync(
             _settings.Username,
             _settings.Password,
             cancellationTokenSource.Token);
+        
+        Console.WriteLine("SMTP Auth OK");
+
+        Console.WriteLine("SMTP Send start");
 
         await client.SendAsync(
             message,
             cancellationTokenSource.Token);
+        
+        Console.WriteLine("SMTP Send OK");
 
         await client.DisconnectAsync(
             true,
