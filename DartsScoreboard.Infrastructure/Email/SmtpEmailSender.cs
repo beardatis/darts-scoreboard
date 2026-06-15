@@ -97,6 +97,10 @@ public class SmtpEmailSender : IEmailSender
 
         client.Timeout = 10000;
 
+#if DEBUG
+        client.CheckCertificateRevocation = false;
+#endif
+
         using CancellationTokenSource cancellationTokenSource =
             new(TimeSpan.FromSeconds(10));
         
@@ -106,7 +110,7 @@ public class SmtpEmailSender : IEmailSender
         await client.ConnectAsync(
             _settings.Host,
             _settings.Port,
-            SecureSocketOptions.SslOnConnect, //SecureSocketOptions.StartTls,
+            SecureSocketOptions.StartTls,
             cancellationTokenSource.Token);
         
         Console.WriteLine("SMTP Connect OK");
