@@ -79,9 +79,17 @@ public class AuthController : ControllerBase
         _dbContext.Users.Add(user);
 
         await _dbContext.SaveChangesAsync();
-        await _emailSender.SendRegistrationWelcomeEmailAsync(
-            user.Email,
-            user.Username);
+        try
+        {
+            await _emailSender.SendRegistrationWelcomeEmailAsync(
+                user.Email,
+                user.Username);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"Registration welcome email failed for {user.Email}: {ex.Message}");
+        }
 
         return Ok();
     }

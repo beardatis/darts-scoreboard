@@ -61,6 +61,9 @@ export class Register {
     })
       .subscribe({
         next: () => {
+          this.isRegistering = false;
+          this.changeDetectorRef.detectChanges();
+
           alert('Sikeres regisztráció.');
           this.router.navigate(['/']);
         },
