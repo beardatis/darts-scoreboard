@@ -48,8 +48,14 @@
             }
 
             @if (checkoutSuggestions[player.playerId]) {
-              <div class="checkout">
-                Checkout: {{ checkoutSuggestions[player.playerId] }}
+              <div class="checkout-box">
+                <div class="checkout-label">
+                  🎯 Ajánlott kiszálló
+                </div>
+
+                <div class="checkout-value">
+                  {{ checkoutSuggestions[player.playerId]!.replaceAll(' ', ' → ') }}
+                </div>
               </div>
             }
           </div>

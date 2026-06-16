@@ -330,6 +330,28 @@
     .number-grid {
       grid-template-columns: repeat(5, 1fr);
     }
+    .checkout-box {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(124, 255, 155, 0.08);
+      border: 1px solid rgba(124, 255, 155, 0.28);
+    }
+
+    .checkout-label {
+      color: #7cff9b;
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .checkout-value {
+      color: #e5f7ec;
+      font-size: 22px;
+      font-weight: 900;
+    }
   }
 
   @media (max-width: 600px) {
