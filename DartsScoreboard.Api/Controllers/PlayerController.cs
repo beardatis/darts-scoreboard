@@ -60,20 +60,36 @@ public class PlayersController : ControllerBase
 
         string normalizedName = request.Name.Trim();
 
-        bool exists = await _dbContext.Players
-            .AnyAsync(player =>
+        if (string.IsNullOrWhiteSpace(normalizedName))
+        {
+            return BadRequest("Player name is required.");
+        }
+
+        Player? existingPlayer = await _dbContext.Players
+            .FirstOrDefaultAsync(player =>
                 player.CreatedByUserId == currentUserId &&
                 player.Name.ToLower() == normalizedName.ToLower());
 
-        if (exists)
+        if (existingPlayer is not null)
         {
-            return BadRequest("Player already exists.");
+            if (existingPlayer.IsActive)
+            {
+                return BadRequest("Player already exists.");
+            }
+
+            existingPlayer.IsActive = true;
+            existingPlayer.Name = normalizedName;
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok();
         }
 
         Player player = new Player
         {
             Name = normalizedName,
-            CreatedByUserId = currentUserId
+            CreatedByUserId = currentUserId,
+            IsActive = true
         };
 
         _dbContext.Players.Add(player);
@@ -94,6 +110,13 @@ public class PlayersController : ControllerBase
 
         bool isAdmin = User.IsInRole("Admin");
 
+        string normalizedName = request.Name.Trim();
+
+        if (string.IsNullOrWhiteSpace(normalizedName))
+        {
+            return BadRequest("Player name is required.");
+        }
+
         Player? player = await _dbContext.Players
             .FirstOrDefaultAsync(player => player.Id == id);
 
@@ -107,17 +130,33 @@ public class PlayersController : ControllerBase
             return Forbid();
         }
 
-        player.Name = request.Name.Trim();
+        bool nameExists = await _dbContext.Players
+            .AnyAsync(otherPlayer =>
+                otherPlayer.Id != player.Id &&
+                otherPlayer.CreatedByUserId == player.CreatedByUserId &&
+                otherPlayer.Name.ToLower() == normalizedName.ToLower());
+
+        if (nameExists)
+        {
+            return BadRequest("Player already exists.");
+        }
+
+        player.Name = normalizedName;
 
         await _dbContext.SaveChangesAsync();
 
         return Ok();
     }
 
-    [HttpPatch("{id:guid}/deactivate")]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> DeactivatePlayer(Guid id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeletePlayer(Guid id)
     {
+        Guid currentUserId = Guid.Parse(
+            User.FindFirstValue(ClaimTypes.NameIdentifier)!
+        );
+
+        bool isAdmin = User.IsInRole("Admin");
+
         Player? player = await _dbContext.Players
             .FirstOrDefaultAsync(player => player.Id == id);
 
@@ -126,10 +165,15 @@ public class PlayersController : ControllerBase
             return NotFound();
         }
 
+        if (!isAdmin && player.CreatedByUserId != currentUserId)
+        {
+            return Forbid();
+        }
+
         player.IsActive = false;
 
         await _dbContext.SaveChangesAsync();
 
-        return Ok();
+        return NoContent();
     }
 }

@@ -19,13 +19,10 @@
 .new-player-card input {
   width: 540px;
   height: 64px;
-
   padding: 0 20px;
-
   background: #111923;
   border: 1px solid #243241;
   border-radius: 16px;
-
   color: #e5f7ec;
   font-size: 18px;
 }
@@ -37,7 +34,6 @@
 .new-player-card button {
   height: 64px;
   padding: 0 36px;
-
   font-size: 20px;
   font-weight: 700;
 }
@@ -55,16 +51,11 @@
   display: flex;
   align-items: center;
   gap: 24px;
-
   min-height: 110px;
-
   padding: 20px 24px;
-
   background: #111923;
-
   border: 1px solid #243241;
   border-radius: 24px;
-
   transition: all .2s ease;
 }
 
@@ -75,31 +66,78 @@
 }
 
 .avatar {
+  flex: 0 0 72px;
   width: 72px;
   height: 72px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   border-radius: 50%;
-
   background: #1c2835;
-
   color: #7cff9b;
   font-size: 38px;
   font-weight: 800;
 }
 
 .player-name {
+  flex: 1;
   font-size: 28px;
   font-weight: 700;
-
   color: #e5f7ec;
 }
 
-@media (max-width: 768px) {
+.player-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
 
+.icon-button {
+  width: 58px;
+  height: 48px;
+  padding: 0;
+  border-radius: 10px;
+}
+
+.danger-icon-button {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+.danger-icon-button:hover:not(:disabled) {
+  background: #b91c1c;
+  border-color: #b91c1c;
+}
+
+.edit-player-input {
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+  padding: 0 16px;
+  background: #0b1118;
+  border: 1px solid #314457;
+  border-radius: 12px;
+  color: #e5f7ec;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.player-card.editing {
+  align-items: center;
+}
+
+.player-card.editing .player-actions {
+  flex-direction: column;
+  gap: 10px;
+}
+
+.player-card.editing .player-actions button {
+  width: 120px;
+  height: 48px;
+}
+
+@media (max-width: 768px) {
   .players-page h1 {
     font-size: 40px;
   }
@@ -124,9 +162,11 @@
   .player-card {
     min-height: 90px;
     padding: 16px;
+    gap: 16px;
   }
 
   .avatar {
+    flex-basis: 56px;
     width: 56px;
     height: 56px;
     font-size: 28px;
@@ -134,5 +174,23 @@
 
   .player-name {
     font-size: 22px;
+  }
+
+  .player-card.editing {
+    flex-wrap: wrap;
+  }
+
+  .player-card.editing .edit-player-input {
+    flex: 1 1 100%;
+  }
+
+  .player-card.editing .player-actions {
+    width: 100%;
+    flex-direction: row;
+  }
+
+  .player-card.editing .player-actions button {
+    flex: 1;
+    width: auto;
   }
 }

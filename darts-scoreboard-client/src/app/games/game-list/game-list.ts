@@ -22,6 +22,8 @@ export class GameList implements OnInit {
 
   games: GameListItem[] = [];
 
+  deletingGameIds: string[] = [];
+
   mode: 'active' | 'history' = 'active';
 
   constructor(
@@ -55,6 +57,60 @@ export class GameList implements OnInit {
       '/games',
       gameId
     ]);
+  }
+
+  abandonGame(gameId: string): void {
+    this.deleteGameInternal(
+      gameId,
+      'Biztosan elveted az aktív játékot?'
+    );
+  }
+
+  deleteGame(gameId: string): void {
+    this.deleteGameInternal(
+      gameId,
+      'Biztosan törlöd ezt a befejezett játékot?'
+    );
+  }
+
+  private deleteGameInternal(
+    gameId: string,
+    confirmMessage: string
+  ): void {
+    if (this.deletingGameIds.includes(gameId)) {
+      return;
+    }
+
+    const confirmed = confirm(confirmMessage);
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.deletingGameIds.push(gameId);
+    this.changeDetectorRef.detectChanges();
+
+    this.gameService.deleteGame(gameId)
+      .subscribe({
+        next: () => {
+          this.games =
+            this.games.filter(game => game.id !== gameId);
+
+          this.deletingGameIds =
+            this.deletingGameIds.filter(id => id !== gameId);
+
+          this.changeDetectorRef.detectChanges();
+        },
+        error: error => {
+          this.deletingGameIds =
+            this.deletingGameIds.filter(id => id !== gameId);
+
+          this.changeDetectorRef.detectChanges();
+
+          console.error(error);
+          alert('Nem sikerült törölni a játékot.');
+        }
+      });
   }
 
   private loadGames(): void {

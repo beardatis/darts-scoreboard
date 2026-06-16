@@ -26,15 +26,71 @@
 
     @for (player of players; track player.id) {
 
-      <div class="player-card">
+      <div class="player-card"
+           [class.editing]="editingPlayerId === player.id">
 
         <div class="avatar">
           {{ player.name.charAt(0).toUpperCase() }}
         </div>
 
-        <div class="player-name">
-          {{ player.name }}
-        </div>
+        @if (editingPlayerId === player.id) {
+
+          <input
+            class="edit-player-input"
+            type="text"
+            [(ngModel)]="editingPlayerName">
+
+          <div class="player-actions">
+            <button
+              type="button"
+              class="save-button"
+              [disabled]="savingPlayerIds.includes(player.id)"
+              (click)="savePlayer(player)">
+              @if (savingPlayerIds.includes(player.id)) {
+                Mentés...
+              } @else {
+                Mentés
+              }
+            </button>
+
+            <button
+              type="button"
+              class="secondary-button"
+              (click)="cancelEditing()">
+              Mégse
+            </button>
+          </div>
+
+        } @else {
+
+          <div class="player-name">
+            {{ player.name }}
+          </div>
+
+          <div class="player-actions">
+            <button
+              type="button"
+              class="icon-button"
+              title="Szerkesztés"
+              (click)="startEditing(player)">
+              ✏️
+            </button>
+
+            <button
+              type="button"
+              class="icon-button danger-icon-button"
+              title="Törlés"
+              [disabled]="deletingPlayerIds.includes(player.id)"
+              (click)="deletePlayer(player)">
+              @if (deletingPlayerIds.includes(player.id)) {
+                ...
+              } @else {
+                🗑️
+              }
+            </button>
+          </div>
+
+        }
 
       </div>
 

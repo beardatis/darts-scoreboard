@@ -23,11 +23,23 @@
             {{ game.startedAt | date:'yyyy.MM.dd HH:mm' }}
           </div>
 
-          <button
-            type="button"
-            (click)="openGame(game.id)">
-            Folytatás
-          </button>
+          <div class="game-actions">
+
+            <button
+              type="button"
+              (click)="openGame(game.id)">
+              Folytatás
+            </button>
+
+            <button
+              type="button"
+              class="danger-button"
+              [disabled]="deletingGameIds.includes(game.id)"
+              (click)="abandonGame(game.id)">
+              Elvetés
+            </button>
+
+          </div>
 
         </div>
 
@@ -65,11 +77,23 @@
             {{ game.finishedAt | date:'yyyy.MM.dd HH:mm' }}
           </div>
 
-          <button
-            type="button"
-            (click)="openGame(game.id)">
-            Megnyitás
-          </button>
+          <div class="game-actions">
+
+            <button
+              type="button"
+              (click)="openGame(game.id)">
+              Megnyitás
+            </button>
+
+            <button
+              type="button"
+              class="danger-button"
+              [disabled]="deletingGameIds.includes(game.id)"
+              (click)="deleteGame(game.id)">
+              Törlés
+            </button>
+
+          </div>
 
         </div>
 
