@@ -106,22 +106,22 @@ public class GamesController : ControllerBase
         bool isAdmin = User.IsInRole("Admin");
 
 
-    Game? game = await _dbContext.Games
+        Game? game = await _dbContext.Games
             .Include(game => game.GamePlayers)
             .ThenInclude(gamePlayer => gamePlayer.Player)
             .FirstOrDefaultAsync(game => game.Id == id);
         if (game is null)
-    {
-        return NotFound();
-    }
+        {
+            return NotFound();
+        }
 
-    if (!isAdmin &&
-    game.CreatedByUserId != currentUserId)
-    {
-        return Forbid();
-    }
+        if (!isAdmin &&
+            game.CreatedByUserId != currentUserId)
+        {
+            return Forbid();
+        }
 
-    GameResponse response = new GameResponse
+        GameResponse response = new GameResponse
         {
             Id = game.Id,
             GameType = game.GameType,
@@ -157,11 +157,10 @@ public class GamesController : ControllerBase
                 });
         }
 
-return Ok(response);
+        return Ok(response);
+    }
 
-}
-
-[HttpPost("{id:guid}/throw")]
+    [HttpPost("{id:guid}/throw")]
 public async Task<IActionResult> RecordThrow(
     Guid id,
     RecordThrowRequest request)
@@ -201,8 +200,13 @@ public async Task<IActionResult> RecordThrow(
         return BadRequest("Player is not part of this game.");
     }
 
-    int throwScore = request.Dart1 + request.Dart2 + request.Dart3;
-    int newRemainingScore = gamePlayer.RemainingScore - throwScore;
+    int throwScore =
+        request.Dart1 +
+        request.Dart2 +
+        request.Dart3;
+
+    int newRemainingScore =
+        gamePlayer.RemainingScore - throwScore;
 
     bool lastDartIsDoubleOut = false;
 
@@ -223,40 +227,49 @@ public async Task<IActionResult> RecordThrow(
         newRemainingScore < 0 ||
         newRemainingScore == 1 ||
         (newRemainingScore == 0 && !lastDartIsDoubleOut);
-    
+
     int remainingAfterThrow = isBust
         ? gamePlayer.RemainingScore
         : newRemainingScore;
 
     if (!isBust)
     {
-        gamePlayer.RemainingScore = newRemainingScore;
+        gamePlayer.RemainingScore =
+            newRemainingScore;
     }
 
     if (!isBust && remainingAfterThrow == 0)
     {
         game.Status = GameStatus.Finished;
-        game.WinnerPlayerId = gamePlayer.PlayerId;
-        game.FinishedAt = DateTime.UtcNow;
+        game.WinnerPlayerId =
+            gamePlayer.PlayerId;
+
+        game.FinishedAt =
+            DateTime.UtcNow;
     }
 
-    int nextRoundNumber = await _dbContext.ThrowRecords
-        .Where(throwRecord =>
-            throwRecord.GamePlayerId == gamePlayer.Id)
-        .CountAsync() + 1;
-    
-    bool throwAlreadyExists = await _dbContext.ThrowRecords
-        .AnyAsync(throwRecord =>
-            throwRecord.GameId == game.Id &&
-            throwRecord.GamePlayerId == gamePlayer.Id &&
-            throwRecord.RoundNumber == nextRoundNumber);
+    int nextRoundNumber =
+        await _dbContext.ThrowRecords
+            .Where(throwRecord =>
+                throwRecord.GamePlayerId ==
+                gamePlayer.Id)
+            .CountAsync() + 1;
+
+    bool throwAlreadyExists =
+        await _dbContext.ThrowRecords
+            .AnyAsync(throwRecord =>
+                throwRecord.GameId == game.Id &&
+                throwRecord.GamePlayerId == gamePlayer.Id &&
+                throwRecord.RoundNumber == nextRoundNumber);
 
     if (throwAlreadyExists)
     {
-        return Conflict("Throw already recorded for this player in this round.");
+        return Conflict(
+            "Throw already recorded for this player in this round."
+        );
     }
 
-    ThrowRecord throwRecord = new ThrowRecord
+    ThrowRecord throwRecord = new()
     {
         GameId = game.Id,
         GamePlayerId = gamePlayer.Id,
@@ -269,7 +282,8 @@ public async Task<IActionResult> RecordThrow(
         IsBust = isBust
     };
 
-    _dbContext.ThrowRecords.Add(throwRecord);
+    _dbContext.ThrowRecords.Add(
+        throwRecord);
 
     try
     {
@@ -282,11 +296,6 @@ public async Task<IActionResult> RecordThrow(
         );
     }
 
-    _dbContext.ThrowRecords.Add(throwRecord);
-
-    await _dbContext.SaveChangesAsync();
-
-    //return Ok();
     string? checkoutSuggestion = null;
 
     if (gamePlayer.RemainingScore <= 170 &&
@@ -297,7 +306,7 @@ public async Task<IActionResult> RecordThrow(
             out checkoutSuggestion);
     }
 
-    RecordThrowResponse response = new RecordThrowResponse
+    RecordThrowResponse response = new()
     {
         GameId = game.Id,
         PlayerId = gamePlayer.PlayerId,
@@ -307,94 +316,136 @@ public async Task<IActionResult> RecordThrow(
         Score = throwScore,
         RemainingScore = gamePlayer.RemainingScore,
         IsBust = isBust,
-        IsGameFinished = game.Status == GameStatus.Finished,
-        WinnerPlayerId = game.WinnerPlayerId,
-        CheckoutSuggestion = checkoutSuggestion
+        IsGameFinished =
+            game.Status == GameStatus.Finished,
+        WinnerPlayerId =
+            game.WinnerPlayerId,
+        CheckoutSuggestion =
+            checkoutSuggestion
     };
 
     return Ok(response);
 }
 
-[HttpGet("{id:guid}/throws")]
-public async Task<ActionResult<List<ThrowRecordResponse>>> GetThrows(
-    Guid id)
-{
-    Guid currentUserId = Guid.Parse(
-        User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
-
-    bool isAdmin = User.IsInRole("Admin");
-
-    Game? game = await _dbContext.Games
-        .FirstOrDefaultAsync(game => game.Id == id);
-
-    if (game is null)
+    [HttpGet("{id:guid}/throws")]
+    public async Task<ActionResult<List<ThrowRecordResponse>>> GetThrows(
+        Guid id)
     {
-        return NotFound();
-    }
+        Guid currentUserId = Guid.Parse(
+            User.FindFirstValue(ClaimTypes.NameIdentifier)!
+        );
 
-    if (!isAdmin && game.CreatedByUserId != currentUserId)
-    {
-        return Forbid();
-    }
+        bool isAdmin = User.IsInRole("Admin");
 
-    List<ThrowRecordResponse> throws = await _dbContext.ThrowRecords
-        .Where(throwRecord => throwRecord.GameId == id)
-        .Include(throwRecord => throwRecord.GamePlayer)
-        .ThenInclude(gamePlayer => gamePlayer!.Player)
-        .OrderBy(throwRecord => throwRecord.RoundNumber)
-        .ThenBy(throwRecord => throwRecord.GamePlayer!.TurnOrder)
-        .ThenBy(throwRecord => throwRecord.CreatedAt)
-        .Select(throwRecord => new ThrowRecordResponse
+        Game? game = await _dbContext.Games
+            .FirstOrDefaultAsync(game => game.Id == id);
+
+        if (game is null)
         {
-            Id = throwRecord.Id,
-            GameId = throwRecord.GameId,
-            GamePlayerId = throwRecord.GamePlayerId,
-            PlayerName = throwRecord.GamePlayer!.Player!.Name,
-            Dart1 = throwRecord.Dart1,
-            Dart2 = throwRecord.Dart2,
-            Dart3 = throwRecord.Dart3,
-            Score = throwRecord.Score,
-            RemainingAfterThrow = throwRecord.RemainingAfterThrow,
-            RoundNumber = throwRecord.RoundNumber,
-            IsBust = throwRecord.IsBust,
-            CreatedAt = throwRecord.CreatedAt
-        })
-        .ToListAsync();
+            return NotFound();
+        }
 
-    return Ok(throws);
-}
+        if (!isAdmin && game.CreatedByUserId != currentUserId)
+        {
+            return Forbid();
+        }
 
-[HttpGet]
-public async Task<ActionResult<List<GameListItemResponse>>> GetGames()
-{
-    Guid currentUserId = Guid.Parse(
-        User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+        List<ThrowRecordResponse> throws = await _dbContext.ThrowRecords
+            .Where(throwRecord => throwRecord.GameId == id)
+            .Include(throwRecord => throwRecord.GamePlayer)
+            .ThenInclude(gamePlayer => gamePlayer!.Player)
+            .OrderBy(throwRecord => throwRecord.RoundNumber)
+            .ThenBy(throwRecord => throwRecord.GamePlayer!.TurnOrder)
+            .ThenBy(throwRecord => throwRecord.CreatedAt)
+            .Select(throwRecord => new ThrowRecordResponse
+            {
+                Id = throwRecord.Id,
+                GameId = throwRecord.GameId,
+                GamePlayerId = throwRecord.GamePlayerId,
+                PlayerName = throwRecord.GamePlayer!.Player!.Name,
+                Dart1 = throwRecord.Dart1,
+                Dart2 = throwRecord.Dart2,
+                Dart3 = throwRecord.Dart3,
+                Score = throwRecord.Score,
+                RemainingAfterThrow = throwRecord.RemainingAfterThrow,
+                RoundNumber = throwRecord.RoundNumber,
+                IsBust = throwRecord.IsBust,
+                CreatedAt = throwRecord.CreatedAt
+            })
+            .ToListAsync();
 
-    bool isAdmin = User.IsInRole("Admin");
-
-    IQueryable<Game> query = _dbContext.Games;
-
-    if (!isAdmin)
-    {
-        query = query.Where(game =>
-            game.CreatedByUserId == currentUserId);
+        return Ok(throws);
     }
 
-    List<GameListItemResponse> games = await query
-        .OrderByDescending(game => game.StartedAt)
-        .Select(game => new GameListItemResponse
-        {
-            Id = game.Id,
-            GameType = game.GameType,
-            Status = game.Status,
-            WinnerPlayerId = game.WinnerPlayerId,
-            StartedAt = game.StartedAt,
-            FinishedAt = game.FinishedAt
-        })
-        .ToListAsync();
+    [HttpGet]
+    public async Task<ActionResult<List<GameListItemResponse>>> GetGames()
+    {
+        Guid currentUserId = Guid.Parse(
+            User.FindFirstValue(ClaimTypes.NameIdentifier)!
+        );
 
-    return Ok(games);
-}
+        bool isAdmin = User.IsInRole("Admin");
+
+        IQueryable<Game> query = _dbContext.Games;
+
+        if (!isAdmin)
+        {
+            query = query.Where(game =>
+                game.CreatedByUserId == currentUserId);
+        }
+
+        List<GameListItemResponse> games = await query
+            .OrderByDescending(game => game.StartedAt)
+            .Select(game => new GameListItemResponse
+            {
+                Id = game.Id,
+                GameType = game.GameType,
+                Status = game.Status,
+                WinnerPlayerId = game.WinnerPlayerId,
+                StartedAt = game.StartedAt,
+                FinishedAt = game.FinishedAt
+            })
+            .ToListAsync();
+
+        return Ok(games);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteGame(Guid id)
+    {
+        Guid currentUserId = Guid.Parse(
+            User.FindFirstValue(ClaimTypes.NameIdentifier)!
+        );
+
+        Game? game = await _dbContext.Games
+            .FirstOrDefaultAsync(game => game.Id == id);
+
+        if (game is null)
+        {
+            return NotFound();
+        }
+
+        bool isAdmin = User.IsInRole("Admin");
+
+        if (!isAdmin && game.CreatedByUserId != currentUserId)
+        {
+            return Forbid();
+        }
+
+        List<ThrowRecord> throwRecords = await _dbContext.ThrowRecords
+            .Where(throwRecord => throwRecord.GameId == id)
+            .ToListAsync();
+
+        List<GamePlayer> gamePlayers = await _dbContext.GamePlayers
+            .Where(gamePlayer => gamePlayer.GameId == id)
+            .ToListAsync();
+
+        _dbContext.ThrowRecords.RemoveRange(throwRecords);
+        _dbContext.GamePlayers.RemoveRange(gamePlayers);
+        _dbContext.Games.Remove(game);
+
+        await _dbContext.SaveChangesAsync();
+
+        return NoContent();
+    }
 }

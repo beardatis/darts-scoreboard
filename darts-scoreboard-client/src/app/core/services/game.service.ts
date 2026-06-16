@@ -53,4 +53,9 @@ export class GameService {
       `${environment.apiUrl}/api/games`
     );
   }
+  deleteGame(gameId: string) {
+    return this.httpClient.delete<void>(
+      `${environment.apiUrl}/api/games/${gameId}`
+    );
+  }
 }

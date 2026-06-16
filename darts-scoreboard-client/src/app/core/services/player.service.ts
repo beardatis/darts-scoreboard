@@ -27,4 +27,21 @@ export class PlayerService {
       { name }
     );
   }
+  updatePlayer(
+    playerId: string,
+    name: string
+  ) {
+    return this.httpClient.put<void>(
+      `${environment.apiUrl}/api/players/${playerId}`,
+      {
+        name
+      }
+    );
+  }
+
+  deletePlayer(playerId: string) {
+    return this.httpClient.delete<void>(
+      `${environment.apiUrl}/api/players/${playerId}`
+    );
+  }
 }
