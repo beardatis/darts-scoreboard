@@ -20,7 +20,7 @@
 
           <div class="game-meta">
             {{ 'GAME_LIST.STARTED_AT' | translate }}
-            {{ game.startedAt | date:'yyyy.MM.dd HH:mm' }}
+            {{ game.startedAt | date:dateTimeFormat }}
           </div>
 
           <div class="game-actions">
@@ -69,12 +69,12 @@
 
           <div class="game-meta">
             {{ 'GAME_LIST.STARTED_AT' | translate }}
-            {{ game.startedAt | date:'yyyy.MM.dd HH:mm' }}
+            {{ game.startedAt | date:dateTimeFormat }}
           </div>
 
           <div class="game-meta">
             {{ 'GAME_LIST.FINISHED_AT' | translate }}
-            {{ game.finishedAt | date:'yyyy.MM.dd HH:mm' }}
+            {{ game.finishedAt | date:dateTimeFormat }}
           </div>
 
           <div class="game-actions">

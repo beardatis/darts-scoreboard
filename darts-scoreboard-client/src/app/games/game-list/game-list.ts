@@ -12,11 +12,13 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { GameService } from '../../core/services/game.service';
 import { GameListItem } from '../../shared/models/game-list-item';
 
+import { DateFormatService } from '../../core/services/date-format.service';
+
 @Component({
   selector: 'app-game-list',
   imports: [
     CommonModule,
-    TranslatePipe
+    TranslatePipe,
   ],
   templateUrl: './game-list.html',
   styleUrl: './game-list.scss'
@@ -34,7 +36,8 @@ export class GameList implements OnInit {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly changeDetectorRef: ChangeDetectorRef,
-    private readonly translateService: TranslateService
+    private readonly translateService: TranslateService,
+    private readonly dateFormatService: DateFormatService
   ) {
   }
 
@@ -46,6 +49,12 @@ export class GameList implements OnInit {
     }
 
     this.loadGames();
+  }
+  get dateTimeFormat(): string {
+    const language =
+      localStorage.getItem('language') ?? 'hu';
+
+    return this.dateFormatService.getDateTimeFormat(language);
   }
 
   get activeGames(): GameListItem[] {
