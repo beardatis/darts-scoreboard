@@ -26,6 +26,8 @@ import { ThrowHistoryItem } from '../../shared/models/throw-history-item';
 })
 export class GameDetails implements OnInit {
 
+  hasSelectedAnyDart = false;
+
   game: GameDetailsModel | null = null;
 
   activePlayerIndex = 0;
@@ -75,7 +77,7 @@ export class GameDetails implements OnInit {
   }
 
   setDouble(): void {
-    if (this.isRecordingThrow) {
+    if (this.isGameFinished || this.isRecordingThrow) {
       return;
     }
 
@@ -83,7 +85,7 @@ export class GameDetails implements OnInit {
   }
 
   setTriple(): void {
-    if (this.isRecordingThrow) {
+    if (this.isGameFinished || this.isRecordingThrow) {
       return;
     }
 
@@ -91,7 +93,7 @@ export class GameDetails implements OnInit {
   }
 
   selectDartValue(value: number): void {
-    if (this.isRecordingThrow) {
+    if (this.isGameFinished || this.isRecordingThrow) {
       return;
     }
 
@@ -114,10 +116,11 @@ export class GameDetails implements OnInit {
     this.selectedMultiplier = 1;
 
     this.changeDetectorRef.detectChanges();
+    this.hasSelectedAnyDart = true;
   }
 
   selectBull(value: number): void {
-    if (this.isRecordingThrow) {
+    if (this.isGameFinished || this.isRecordingThrow) {
       return;
     }
 
@@ -134,10 +137,11 @@ export class GameDetails implements OnInit {
     this.selectedMultiplier = 1;
 
     this.changeDetectorRef.detectChanges();
+    this.hasSelectedAnyDart = true;
   }
 
   clearCurrentThrow(): void {
-    if (this.isRecordingThrow) {
+    if (this.isGameFinished || this.isRecordingThrow) {
       return;
     }
 
@@ -145,10 +149,10 @@ export class GameDetails implements OnInit {
   }
 
   recordCurrentThrow(): void {
-    if (this.isRecordingThrow) {
+    if (!this.canRecordThrow) {
       return;
     }
-
+    
     if (this.game === null) {
       return;
     }
@@ -257,8 +261,24 @@ export class GameDetails implements OnInit {
     ];
 
     this.changeDetectorRef.detectChanges();
+    this.hasSelectedAnyDart = false;
   }
+  private updateActivePlayerFromThrows(): void {
+    if (this.game === null) {
+      return;
+    }
 
+    if (this.game.players.length === 0) {
+      return;
+    }
+
+    if (this.isGameFinished) {
+      return;
+    }
+
+    this.activePlayerIndex =
+      this.throws.length % this.game.players.length;
+  }
   private loadGame(gameId: string): void {
     this.gameService.getGame(gameId)
       .subscribe({
@@ -277,6 +297,7 @@ export class GameDetails implements OnInit {
           this.winnerPlayerId =
             game.winnerPlayerId;
 
+          this.updateActivePlayerFromThrows();
           this.changeDetectorRef.detectChanges();
         },
         error: error => {
@@ -290,6 +311,7 @@ export class GameDetails implements OnInit {
       .subscribe({
         next: throws => {
           this.throws = throws;
+          this.updateActivePlayerFromThrows();
           this.changeDetectorRef.detectChanges();
         },
         error: error => {
@@ -310,5 +332,12 @@ export class GameDetails implements OnInit {
     ];
 
     return classes[index % classes.length];
+  }
+  get canRecordThrow(): boolean {
+    return (
+      !this.isGameFinished &&
+      !this.isRecordingThrow &&
+      this.hasSelectedAnyDart
+    );
   }
 }
