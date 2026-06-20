@@ -48,6 +48,12 @@
   border-radius: 999px;
 }
 
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
 .navbar-user {
   position: relative;
 }
@@ -100,6 +106,25 @@
   display: none;
 }
 
+.mobile-user {
+  color: #7cff9b;
+  font-size: 16px;
+  font-weight: 900;
+  padding-bottom: 4px;
+}
+
+.mobile-language-switcher {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.mobile-menu hr {
+  width: 100%;
+  border: none;
+  border-top: 1px solid #243241;
+  margin: 4px 0;
+}
+
 @media (max-width: 900px) {
   .navbar {
     height: 72px;
@@ -111,7 +136,7 @@
   }
 
   .navbar-links,
-  .navbar-user {
+  .navbar-right {
     display: none;
   }
 
@@ -130,7 +155,7 @@
     position: absolute;
     top: 72px;
     right: 16px;
-    width: 260px;
+    width: 280px;
     flex-direction: column;
     gap: 12px;
     background: #111923;

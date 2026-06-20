@@ -14,62 +14,68 @@
       routerLink="/games/create"
       routerLinkActive="active-link"
       [routerLinkActiveOptions]="{ exact: true }">
-      Új játék
+      {{ 'NAV.NEW_GAME' | translate }}
     </a>
 
     <a
       routerLink="/games/active"
       routerLinkActive="active-link"
       [routerLinkActiveOptions]="{ exact: true }">
-      Aktív játékok
+      {{ 'NAV.ACTIVE_GAMES' | translate }}
     </a>
 
     <a
       routerLink="/games/history"
       routerLinkActive="active-link"
       [routerLinkActiveOptions]="{ exact: true }">
-      Előzmények
+      {{ 'NAV.HISTORY' | translate }}
     </a>
 
     <a
       routerLink="/players"
       routerLinkActive="active-link"
       [routerLinkActiveOptions]="{ exact: true }">
-      Játékosok
+      {{ 'NAV.PLAYERS' | translate }}
     </a>
 
   </div>
 
-  <div class="navbar-user">
+  <div class="navbar-right">
 
-    <button
-      type="button"
-      class="user-button"
-      (click)="toggleUserMenu()">
+    <app-language-switcher></app-language-switcher>
 
-      👤 {{ username }}
+    <div class="navbar-user">
 
-      <span>
-        ▼
-      </span>
+      <button
+        type="button"
+        class="user-button"
+        (click)="toggleUserMenu()">
 
-    </button>
+        👤 {{ username }}
 
-    @if (isUserMenuOpen) {
+        <span>
+          ▼
+        </span>
 
-      <div class="user-menu">
+      </button>
 
-        <button
-          type="button"
-          (click)="logout()">
+      @if (isUserMenuOpen) {
 
-          Kilépés
+        <div class="user-menu">
 
-        </button>
+          <button
+            type="button"
+            (click)="logout()">
 
-      </div>
+            {{ 'NAV.LOGOUT' | translate }}
 
-    }
+          </button>
+
+        </div>
+
+      }
+
+    </div>
 
   </div>
 
@@ -86,11 +92,21 @@
 
     <div class="mobile-menu">
 
+      <div class="mobile-user">
+        👤 {{ username }}
+      </div>
+
+      <div class="mobile-language-switcher">
+        <app-language-switcher></app-language-switcher>
+      </div>
+
+      <hr>
+
       <a
         routerLink="/games/create"
         (click)="closeMenu()">
 
-        Új játék
+        {{ 'NAV.NEW_GAME' | translate }}
 
       </a>
 
@@ -98,7 +114,7 @@
         routerLink="/games/active"
         (click)="closeMenu()">
 
-        Aktív játékok
+        {{ 'NAV.ACTIVE_GAMES' | translate }}
 
       </a>
 
@@ -106,7 +122,7 @@
         routerLink="/games/history"
         (click)="closeMenu()">
 
-        Előzmények
+        {{ 'NAV.HISTORY' | translate }}
 
       </a>
 
@@ -114,7 +130,7 @@
         routerLink="/players"
         (click)="closeMenu()">
 
-        Játékosok
+        {{ 'NAV.PLAYERS' | translate }}
 
       </a>
 
@@ -124,7 +140,7 @@
         type="button"
         (click)="logout()">
 
-        Kilépés
+        {{ 'NAV.LOGOUT' | translate }}
 
       </button>
 

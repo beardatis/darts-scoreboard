@@ -2,10 +2,10 @@
 
   @if (mode === 'active') {
 
-    <h1>Aktív játékok</h1>
+    <h1>{{ 'GAME_LIST.ACTIVE_TITLE' | translate }}</h1>
 
     @if (activeGames.length === 0) {
-      <p>Nincs aktív játék.</p>
+      <p>{{ 'GAME_LIST.NO_ACTIVE_GAMES' | translate }}</p>
     }
 
     <div class="games-grid">
@@ -19,7 +19,7 @@
           </div>
 
           <div class="game-meta">
-            Kezdés:
+            {{ 'GAME_LIST.STARTED_AT' | translate }}
             {{ game.startedAt | date:'yyyy.MM.dd HH:mm' }}
           </div>
 
@@ -28,7 +28,7 @@
             <button
               type="button"
               (click)="openGame(game.id)">
-              Folytatás
+              {{ 'GAME_LIST.CONTINUE' | translate }}
             </button>
 
             <button
@@ -36,7 +36,7 @@
               class="danger-button"
               [disabled]="deletingGameIds.includes(game.id)"
               (click)="abandonGame(game.id)">
-              Elvetés
+              {{ 'GAME_LIST.ABANDON' | translate }}
             </button>
 
           </div>
@@ -51,10 +51,10 @@
 
   @if (mode === 'history') {
 
-    <h1>Előzmények</h1>
+    <h1>{{ 'GAME_LIST.HISTORY_TITLE' | translate }}</h1>
 
     @if (finishedGames.length === 0) {
-      <p>Nincs befejezett játék.</p>
+      <p>{{ 'GAME_LIST.NO_FINISHED_GAMES' | translate }}</p>
     }
 
     <div class="games-grid">
@@ -68,12 +68,12 @@
           </div>
 
           <div class="game-meta">
-            Kezdés:
+            {{ 'GAME_LIST.STARTED_AT' | translate }}
             {{ game.startedAt | date:'yyyy.MM.dd HH:mm' }}
           </div>
 
           <div class="game-meta">
-            Befejezve:
+            {{ 'GAME_LIST.FINISHED_AT' | translate }}
             {{ game.finishedAt | date:'yyyy.MM.dd HH:mm' }}
           </div>
 
@@ -82,7 +82,7 @@
             <button
               type="button"
               (click)="openGame(game.id)">
-              Megnyitás
+              {{ 'GAME_LIST.OPEN' | translate }}
             </button>
 
             <button
@@ -90,7 +90,7 @@
               class="danger-button"
               [disabled]="deletingGameIds.includes(game.id)"
               (click)="deleteGame(game.id)">
-              Törlés
+              {{ 'GAME_LIST.DELETE' | translate }}
             </button>
 
           </div>

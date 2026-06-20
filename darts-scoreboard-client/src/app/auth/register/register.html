@@ -1,22 +1,26 @@
-<div class="register-page">
+<div class="auth-page">
 
-  <div class="register-card">
+  <div class="auth-card">
 
-    <h1>Regisztráció</h1>
+    <div class="auth-switcher-wrapper">
+      <app-language-switcher></app-language-switcher>
+    </div>
+
+    <h1>{{ 'AUTH.REGISTER' | translate }}</h1>
 
     <input
       type="text"
-      placeholder="Felhasználónév"
+      [placeholder]="'AUTH.USERNAME' | translate"
       [(ngModel)]="username">
 
     <input
       type="email"
-      placeholder="Email cím"
+      [placeholder]="'AUTH.EMAIL' | translate"
       [(ngModel)]="email">
 
     <input
       type="password"
-      placeholder="Jelszó"
+      [placeholder]="'AUTH.PASSWORD' | translate"
       [(ngModel)]="password">
 
     <button
@@ -24,15 +28,15 @@
       [disabled]="isRegistering"
       (click)="register()">
       @if (isRegistering) {
-        Regisztráció...
+        {{ 'AUTH.REGISTER_LOADING' | translate }}
       } @else {
-        Regisztráció
+        {{ 'AUTH.REGISTER' | translate }}
       }
     </button>
 
     <div class="login-link">
       <a routerLink="/">
-        Már van fiókom
+        {{ 'AUTH.ALREADY_HAVE_ACCOUNT' | translate }}
       </a>
     </div>
 

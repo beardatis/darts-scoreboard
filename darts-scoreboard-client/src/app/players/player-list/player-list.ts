@@ -2,6 +2,8 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+
 import { PlayerService } from '../../core/services/player.service';
 import { Player } from '../../shared/models/player';
 
@@ -9,7 +11,8 @@ import { Player } from '../../shared/models/player';
   selector: 'app-player-list',
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    TranslatePipe
   ],
   templateUrl: './player-list.html',
   styleUrl: './player-list.scss'
@@ -29,7 +32,8 @@ export class PlayerList implements OnInit {
 
   constructor(
     private readonly playerService: PlayerService,
-    private readonly changeDetectorRef: ChangeDetectorRef
+    private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly translateService: TranslateService
   ) {
   }
 
@@ -56,6 +60,7 @@ export class PlayerList implements OnInit {
         next: () => {
           this.newPlayerName = '';
           this.loadPlayers();
+
           this.isCreatingPlayer = false;
           this.changeDetectorRef.detectChanges();
         },
@@ -64,7 +69,11 @@ export class PlayerList implements OnInit {
           this.changeDetectorRef.detectChanges();
 
           console.error(error);
-          alert(error.error ?? 'Nem sikerült létrehozni a játékost.');
+
+          alert(
+            error.error ??
+            this.translateService.instant('PLAYERS.ERROR_CREATE')
+          );
         }
       });
   }
@@ -72,12 +81,14 @@ export class PlayerList implements OnInit {
   startEditing(player: Player): void {
     this.editingPlayerId = player.id;
     this.editingPlayerName = player.name;
+
     this.changeDetectorRef.detectChanges();
   }
 
   cancelEditing(): void {
     this.editingPlayerId = null;
     this.editingPlayerName = '';
+
     this.changeDetectorRef.detectChanges();
   }
 
@@ -89,7 +100,10 @@ export class PlayerList implements OnInit {
     const name = this.editingPlayerName.trim();
 
     if (!name) {
-      alert('A játékos neve nem lehet üres.');
+      alert(
+        this.translateService.instant('PLAYERS.ERROR_EMPTY_NAME')
+      );
+
       return;
     }
 
@@ -117,7 +131,11 @@ export class PlayerList implements OnInit {
           this.changeDetectorRef.detectChanges();
 
           console.error(error);
-          alert(error.error ?? 'Nem sikerült módosítani a játékost.');
+
+          alert(
+            error.error ??
+            this.translateService.instant('PLAYERS.ERROR_UPDATE')
+          );
         }
       });
   }
@@ -128,7 +146,7 @@ export class PlayerList implements OnInit {
     }
 
     const confirmed = confirm(
-      `Biztosan törlöd ezt a játékost: ${player.name}?`
+      `${this.translateService.instant('PLAYERS.CONFIRM_DELETE')} ${player.name}?`
     );
 
     if (!confirmed) {
@@ -156,7 +174,11 @@ export class PlayerList implements OnInit {
           this.changeDetectorRef.detectChanges();
 
           console.error(error);
-          alert(error.error ?? 'Nem sikerült törölni a játékost.');
+
+          alert(
+            error.error ??
+            this.translateService.instant('PLAYERS.ERROR_DELETE')
+          );
         }
       });
   }
@@ -169,10 +191,12 @@ export class PlayerList implements OnInit {
         next: players => {
           this.players = players;
           this.isLoadingPlayers = false;
+
           this.changeDetectorRef.detectChanges();
         },
         error: error => {
           this.isLoadingPlayers = false;
+
           this.changeDetectorRef.detectChanges();
 
           console.error(error);

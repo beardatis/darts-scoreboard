@@ -1,10 +1,10 @@
 <div class="game-create-page">
 
-  <h1>Új játék</h1>
+  <h1>{{ 'GAME_CREATE.TITLE' | translate }}</h1>
 
   <section>
 
-    <h2>Játéktípus</h2>
+    <h2>{{ 'GAME_CREATE.GAME_TYPE' | translate }}</h2>
 
     <div class="game-type-grid">
 
@@ -34,7 +34,7 @@
 
   <section>
 
-    <h2>Játékosok</h2>
+    <h2>{{ 'GAME_CREATE.PLAYERS' | translate }}</h2>
 
     <div class="player-grid">
 
@@ -66,7 +66,7 @@
 
     <section>
 
-      <h2>Kiválasztott játékosok sorrendje</h2>
+      <h2>{{ 'GAME_CREATE.SELECTED_PLAYER_ORDER' | translate }}</h2>
 
       @for (
         playerId of selectedPlayerIds;
@@ -122,12 +122,13 @@
 
   <button
     type="button"
+    class="start-game-button"
     [disabled]="isCreatingGame"
     (click)="startGame()">
     @if (isCreatingGame) {
-      Létrehozás...
+      {{ 'GAME_CREATE.CREATING' | translate }}
     } @else {
-      Játék indítása
+      {{ 'GAME_CREATE.START_GAME' | translate }}
     }
   </button>
 

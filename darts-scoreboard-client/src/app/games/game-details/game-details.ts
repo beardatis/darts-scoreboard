@@ -9,6 +9,8 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgClass } from '@angular/common';
 
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+
 import { GameService } from '../../core/services/game.service';
 import { GameDetailsModel } from '../../shared/models/game-details-model';
 import { RecordThrowRequest } from '../../shared/models/record-throw-request';
@@ -19,7 +21,8 @@ import { ThrowHistoryItem } from '../../shared/models/throw-history-item';
   imports: [
     CommonModule,
     FormsModule,
-    NgClass
+    NgClass,
+    TranslatePipe
   ],
   templateUrl: './game-details.html',
   styleUrl: './game-details.scss'
@@ -60,7 +63,8 @@ export class GameDetails implements OnInit {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly gameService: GameService,
-    private readonly changeDetectorRef: ChangeDetectorRef
+    private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly translateService: TranslateService
   ) {
   }
 
@@ -114,9 +118,9 @@ export class GameDetails implements OnInit {
     }
 
     this.selectedMultiplier = 1;
+    this.hasSelectedAnyDart = true;
 
     this.changeDetectorRef.detectChanges();
-    this.hasSelectedAnyDart = true;
   }
 
   selectBull(value: number): void {
@@ -135,9 +139,9 @@ export class GameDetails implements OnInit {
     }
 
     this.selectedMultiplier = 1;
+    this.hasSelectedAnyDart = true;
 
     this.changeDetectorRef.detectChanges();
-    this.hasSelectedAnyDart = true;
   }
 
   clearCurrentThrow(): void {
@@ -152,7 +156,7 @@ export class GameDetails implements OnInit {
     if (!this.canRecordThrow) {
       return;
     }
-    
+
     if (this.game === null) {
       return;
     }
@@ -179,7 +183,9 @@ export class GameDetails implements OnInit {
       request.dart2 < 0 ||
       request.dart3 < 0
     ) {
-      alert('Negatív dobás nem engedélyezett.');
+      alert(
+        this.translateService.instant('GAME_DETAILS.ERROR_NEGATIVE_THROW')
+      );
       return;
     }
 
@@ -188,7 +194,9 @@ export class GameDetails implements OnInit {
       request.dart2 > 60 ||
       request.dart3 > 60
     ) {
-      alert('Egy nyíl értéke legfeljebb 60 lehet.');
+      alert(
+        this.translateService.instant('GAME_DETAILS.ERROR_DART_TOO_HIGH')
+      );
       return;
     }
 
@@ -201,7 +209,6 @@ export class GameDetails implements OnInit {
     )
       .subscribe({
         next: response => {
-
           console.log('Throw recorded', response);
 
           this.lastThrows[activePlayer.playerId] =
@@ -240,13 +247,38 @@ export class GameDetails implements OnInit {
           console.error(error);
 
           if (error.status === 409) {
-            alert('Ez a dobás már rögzítve lett.');
+            alert(
+              this.translateService.instant('GAME_DETAILS.ERROR_DUPLICATE_THROW')
+            );
             return;
           }
 
-          alert('Nem sikerült rögzíteni a dobást.');
+          alert(
+            this.translateService.instant('GAME_DETAILS.ERROR_RECORD_THROW')
+          );
         }
       });
+  }
+
+  getAvatarClass(index: number): string {
+    const classes = [
+      'avatar-green',
+      'avatar-blue',
+      'avatar-purple',
+      'avatar-orange',
+      'avatar-red',
+      'avatar-cyan'
+    ];
+
+    return classes[index % classes.length];
+  }
+
+  get canRecordThrow(): boolean {
+    return (
+      !this.isGameFinished &&
+      !this.isRecordingThrow &&
+      this.hasSelectedAnyDart
+    );
   }
 
   private resetCurrentThrow(): void {
@@ -260,9 +292,11 @@ export class GameDetails implements OnInit {
       false
     ];
 
-    this.changeDetectorRef.detectChanges();
     this.hasSelectedAnyDart = false;
+
+    this.changeDetectorRef.detectChanges();
   }
+
   private updateActivePlayerFromThrows(): void {
     if (this.game === null) {
       return;
@@ -279,11 +313,11 @@ export class GameDetails implements OnInit {
     this.activePlayerIndex =
       this.throws.length % this.game.players.length;
   }
+
   private loadGame(gameId: string): void {
     this.gameService.getGame(gameId)
       .subscribe({
         next: game => {
-
           this.game = game;
 
           for (const player of game.players) {
@@ -311,6 +345,7 @@ export class GameDetails implements OnInit {
       .subscribe({
         next: throws => {
           this.throws = throws;
+
           this.updateActivePlayerFromThrows();
           this.changeDetectorRef.detectChanges();
         },
@@ -318,26 +353,5 @@ export class GameDetails implements OnInit {
           console.error(error);
         }
       });
-  }
-
-  getAvatarClass(index: number): string {
-
-    const classes = [
-      'avatar-green',
-      'avatar-blue',
-      'avatar-purple',
-      'avatar-orange',
-      'avatar-red',
-      'avatar-cyan'
-    ];
-
-    return classes[index % classes.length];
-  }
-  get canRecordThrow(): boolean {
-    return (
-      !this.isGameFinished &&
-      !this.isRecordingThrow &&
-      this.hasSelectedAnyDart
-    );
   }
 }

@@ -1,13 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { AuthService } from '../../core/services/auth.service';
+import { LanguageSwitcher } from '../language-switcher/language-switcher';
 
 @Component({
   selector: 'app-navbar',
   imports: [
     RouterLink,
-    RouterLinkActive
+    RouterLinkActive,
+    TranslatePipe,
+    LanguageSwitcher
   ],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'

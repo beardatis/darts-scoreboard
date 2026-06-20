@@ -7,13 +7,16 @@ import {
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+
 import { GameService } from '../../core/services/game.service';
 import { GameListItem } from '../../shared/models/game-list-item';
 
 @Component({
   selector: 'app-game-list',
   imports: [
-    CommonModule
+    CommonModule,
+    TranslatePipe
   ],
   templateUrl: './game-list.html',
   styleUrl: './game-list.scss'
@@ -30,7 +33,8 @@ export class GameList implements OnInit {
     private readonly gameService: GameService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly changeDetectorRef: ChangeDetectorRef
+    private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly translateService: TranslateService
   ) {
   }
 
@@ -62,14 +66,14 @@ export class GameList implements OnInit {
   abandonGame(gameId: string): void {
     this.deleteGameInternal(
       gameId,
-      'Biztosan elveted az aktív játékot?'
+      this.translateService.instant('GAME_LIST.CONFIRM_ABANDON')
     );
   }
 
   deleteGame(gameId: string): void {
     this.deleteGameInternal(
       gameId,
-      'Biztosan törlöd ezt a befejezett játékot?'
+      this.translateService.instant('GAME_LIST.CONFIRM_DELETE')
     );
   }
 
@@ -108,7 +112,10 @@ export class GameList implements OnInit {
           this.changeDetectorRef.detectChanges();
 
           console.error(error);
-          alert('Nem sikerült törölni a játékot.');
+
+          alert(
+            this.translateService.instant('GAME_LIST.ERROR_DELETE')
+          );
         }
       });
   }

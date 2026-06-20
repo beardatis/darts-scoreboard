@@ -1,12 +1,12 @@
 <div class="players-page">
 
-  <h1>Játékosok</h1>
+  <h1>{{ 'PLAYERS.TITLE' | translate }}</h1>
 
   <section class="new-player-card">
 
     <input
       type="text"
-      placeholder="Játékos neve"
+      [placeholder]="'PLAYERS.PLAYER_NAME' | translate"
       [(ngModel)]="newPlayerName">
 
     <button
@@ -14,9 +14,9 @@
       [disabled]="isCreatingPlayer"
       (click)="addPlayer()">
       @if (isCreatingPlayer) {
-        Létrehozás...
+        {{ 'PLAYERS.CREATING' | translate }}
       } @else {
-        Új játékos
+        {{ 'PLAYERS.NEW_PLAYER' | translate }}
       }
     </button>
 
@@ -38,6 +38,7 @@
           <input
             class="edit-player-input"
             type="text"
+            [placeholder]="'PLAYERS.PLAYER_NAME' | translate"
             [(ngModel)]="editingPlayerName">
 
           <div class="player-actions">
@@ -47,9 +48,9 @@
               [disabled]="savingPlayerIds.includes(player.id)"
               (click)="savePlayer(player)">
               @if (savingPlayerIds.includes(player.id)) {
-                Mentés...
+                {{ 'PLAYERS.SAVING' | translate }}
               } @else {
-                Mentés
+                {{ 'PLAYERS.SAVE' | translate }}
               }
             </button>
 
@@ -57,7 +58,7 @@
               type="button"
               class="secondary-button"
               (click)="cancelEditing()">
-              Mégse
+              {{ 'PLAYERS.CANCEL' | translate }}
             </button>
           </div>
 
@@ -71,7 +72,7 @@
             <button
               type="button"
               class="icon-button"
-              title="Szerkesztés"
+              [title]="'PLAYERS.EDIT' | translate"
               (click)="startEditing(player)">
               ✏️
             </button>
@@ -79,11 +80,11 @@
             <button
               type="button"
               class="icon-button danger-icon-button"
-              title="Törlés"
+              [title]="'PLAYERS.DELETE' | translate"
               [disabled]="deletingPlayerIds.includes(player.id)"
               (click)="deletePlayer(player)">
               @if (deletingPlayerIds.includes(player.id)) {
-                ...
+                {{ 'PLAYERS.DELETING' | translate }}
               } @else {
                 🗑️
               }

@@ -1,17 +1,21 @@
-<div class="login-page">
+<div class="auth-page">
 
-  <div class="login-card">
+  <div class="auth-card">
 
-    <h1>Darts Scoreboard</h1>
+    <div class="auth-switcher-wrapper">
+      <app-language-switcher></app-language-switcher>
+    </div>
+
+    <h1>{{ 'APP.TITLE' | translate }}</h1>
 
     <input
       type="email"
-      placeholder="Email cím"
+      [placeholder]="'AUTH.EMAIL' | translate"
       [(ngModel)]="email">
 
     <input
       type="password"
-      placeholder="Jelszó"
+      [placeholder]="'AUTH.PASSWORD' | translate"
       [(ngModel)]="password">
 
     <button
@@ -19,24 +23,24 @@
       [disabled]="isLoggingIn"
       (click)="login()">
       @if (isLoggingIn) {
-        Bejelentkezés...
+        {{ 'AUTH.LOGIN_LOADING' | translate }}
       } @else {
-        Bejelentkezés
+        {{ 'AUTH.LOGIN' | translate }}
       }
     </button>
 
     <div class="register-link">
-      Nincs még fiókod?
+      {{ 'AUTH.NO_ACCOUNT' | translate }}
 
       <a routerLink="/register">
-        Regisztráció
+        {{ 'AUTH.REGISTER' | translate }}
       </a>
     </div>
 
     <a
       class="auth-link"
       routerLink="/forgot-password">
-      Elfelejtetted a jelszavad?
+      {{ 'AUTH.FORGOT_PASSWORD' | translate }}
     </a>
 
   </div>

@@ -1,27 +1,68 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { AuthService } from '../../core/services/auth.service';
+import { LanguageSwitcher } from '../../shared/language-switcher/language-switcher';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, RouterLink],
+  imports: [
+    FormsModule,
+    RouterLink,
+    TranslatePipe,
+    LanguageSwitcher
+  ],
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   email = '';
   password = '';
   isLoggingIn = false;
 
+  currentLanguage = 'hu';
+
+  readonly languages = [
+    {
+      code: 'hu',
+      label: 'HU'
+    },
+    {
+      code: 'en',
+      label: 'EN'
+    },
+    {
+      code: 'de',
+      label: 'DE'
+    }
+  ];
+
   constructor(
     private readonly authService: AuthService,
     private readonly router: Router,
-    private readonly changeDetectorRef: ChangeDetectorRef
+    private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly translateService: TranslateService
   ) {
+  }
+
+  ngOnInit(): void {
+    this.currentLanguage =
+      localStorage.getItem('language') ?? 'hu';
+  }
+
+  changeLanguage(language: string): void {
+    this.currentLanguage = language;
+
+    localStorage.setItem(
+      'language',
+      language
+    );
+
+    this.translateService.use(language);
   }
 
   login(): void {
@@ -44,8 +85,6 @@ export class LoginComponent {
           response.username
         );
 
-        console.log('Sikeres login');
-
         this.router.navigate(['/games/create']);
       },
       error: error => {
@@ -53,7 +92,10 @@ export class LoginComponent {
         this.changeDetectorRef.detectChanges();
 
         console.error(error);
-        alert('Hibás email vagy jelszó.');
+
+        alert(
+          this.translateService.instant('AUTH.ERROR_INVALID_LOGIN')
+        );
       }
     });
   }

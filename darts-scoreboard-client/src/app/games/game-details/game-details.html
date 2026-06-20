@@ -5,13 +5,16 @@
     <aside class="players-panel">
 
       <div class="active-game-box">
-        <span class="label">Aktív játék</span>
+        <span class="label">
+          {{ 'GAME_DETAILS.ACTIVE_GAME' | translate }}
+        </span>
+
         <strong>
           {{ game.gameType === 1 ? '301' : '501' }}
         </strong>
       </div>
 
-      <h2>Játékosok</h2>
+      <h2>{{ 'GAME_DETAILS.PLAYERS' | translate }}</h2>
 
       @for (
         player of game.players;
@@ -29,7 +32,6 @@
 
             {{ player.playerName.charAt(0).toUpperCase() }}
 
-
           </div>
 
           <div class="player-info">
@@ -43,14 +45,15 @@
 
             @if (!isGameFinished && lastThrows[player.playerId]) {
               <div class="last-throw">
-                Utolsó: {{ lastThrows[player.playerId] }}
+                {{ 'GAME_DETAILS.LAST_THROW' | translate }}
+                {{ lastThrows[player.playerId] }}
               </div>
             }
 
             @if (checkoutSuggestions[player.playerId]) {
               <div class="checkout-box">
                 <div class="checkout-label">
-                  🎯 Ajánlott kiszálló
+                  🎯 {{ 'GAME_DETAILS.CHECKOUT_SUGGESTION' | translate }}
                 </div>
 
                 <div class="checkout-value">
@@ -71,11 +74,16 @@
       @if (isGameFinished && winnerPlayerId) {
 
         <div class="winner-box">
-          <h1>🏆 Játék vége</h1>
+          <h1>
+            🏆 {{ 'GAME_DETAILS.GAME_OVER' | translate }}
+          </h1>
 
           @for (player of game.players; track player.playerId) {
             @if (player.playerId === winnerPlayerId) {
-              <h2>Nyertes: {{ player.playerName }}</h2>
+              <h2>
+                {{ 'GAME_DETAILS.WINNER' | translate }}
+                {{ player.playerName }}
+              </h2>
             }
           }
         </div>
@@ -85,7 +93,8 @@
       @if (!isGameFinished) {
 
         <div class="active-player-title">
-          <span>Most dob:</span>
+          <span>{{ 'GAME_DETAILS.NOW_THROWING' | translate }}</span>
+
           <strong>
             {{ game.players[activePlayerIndex].playerName }}
           </strong>
@@ -101,13 +110,13 @@
           <button
             [class.active]="selectedMultiplier === 2"
             (click)="setDouble()">
-            Double
+            {{ 'GAME_DETAILS.DOUBLE' | translate }}
           </button>
 
           <button
             [class.active]="selectedMultiplier === 3"
             (click)="setTriple()">
-            Triple
+            {{ 'GAME_DETAILS.TRIPLE' | translate }}
           </button>
         </div>
 
@@ -128,15 +137,15 @@
 
         <div class="bull-row">
           <button (click)="selectBull(25)">
-            Outer Bull
+            {{ 'GAME_DETAILS.OUTER_BULL' | translate }}
           </button>
 
           <button (click)="selectBull(50)">
-            Bull
+            {{ 'GAME_DETAILS.BULL' | translate }}
           </button>
 
           <button (click)="selectDartValue(0)">
-            Miss
+            {{ 'GAME_DETAILS.MISS' | translate }}
           </button>
         </div>
 
@@ -144,7 +153,7 @@
           <button
             class="secondary"
             (click)="clearCurrentThrow()">
-            Törlés
+            {{ 'GAME_DETAILS.CLEAR' | translate }}
           </button>
 
           <button
@@ -154,9 +163,9 @@
             (click)="recordCurrentThrow()">
 
             @if (isRecordingThrow) {
-              Rögzítés...
+              {{ 'GAME_DETAILS.RECORDING' | translate }}
             } @else {
-              Dobás rögzítése
+              {{ 'GAME_DETAILS.RECORD_THROW' | translate }}
             }
 
           </button>
@@ -166,10 +175,10 @@
 
       <section class="history-panel">
 
-        <h2>Dobástörténet</h2>
+        <h2>{{ 'GAME_DETAILS.THROW_HISTORY' | translate }}</h2>
 
         @if (throws.length === 0) {
-          <p>Még nincs dobás.</p>
+          <p>{{ 'GAME_DETAILS.NO_THROWS' | translate }}</p>
         }
 
         @if (throws.length > 0) {
@@ -178,13 +187,13 @@
 
             <thead>
             <tr>
-              <th>Kör</th>
-              <th>Játékos</th>
-              <th>1. nyíl</th>
-              <th>2. nyíl</th>
-              <th>3. nyíl</th>
-              <th>Összpont</th>
-              <th>Maradék</th>
+              <th>{{ 'GAME_DETAILS.ROUND' | translate }}</th>
+              <th>{{ 'GAME_DETAILS.PLAYER' | translate }}</th>
+              <th>{{ 'GAME_DETAILS.DART_1' | translate }}</th>
+              <th>{{ 'GAME_DETAILS.DART_2' | translate }}</th>
+              <th>{{ 'GAME_DETAILS.DART_3' | translate }}</th>
+              <th>{{ 'GAME_DETAILS.TOTAL_SCORE' | translate }}</th>
+              <th>{{ 'GAME_DETAILS.REMAINING' | translate }}</th>
             </tr>
             </thead>
 

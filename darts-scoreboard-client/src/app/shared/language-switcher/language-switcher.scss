@@ -1,0 +1,32 @@
+.language-switcher {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.language-switcher button {
+  width: auto;
+  min-width: 42px;
+  height: 34px;
+
+  padding: 0 10px;
+
+  border-radius: 999px;
+  border: 1px solid #243241;
+
+  background: transparent;
+
+  color: #dce8f2;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.language-switcher button:hover,
+.language-switcher button.active-language {
+  background: rgba(124, 255, 155, 0.12);
+  border-color: #7cff9b;
+  color: #7cff9b;
+}
